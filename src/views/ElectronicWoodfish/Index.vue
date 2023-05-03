@@ -77,7 +77,6 @@ const hit: () => Promise<string> = function () {
         addTextArr.value.shift();
         scale.value = false;
         setTimeout(() => {
-          console.log("sound ended" + Math.random());
           resolve("sound ended");
         }, 1000);
       }
@@ -107,14 +106,15 @@ const autoClick = function () {
 const auto = async function () {
   await hit();
   if (is_auto.value) {
-    console.log("auto");
-
     auto();
   }
 };
 
 // 返回
 const toLeft = function () {
+  is_auto.value = false;
+  audio.pause();
+  audio.currentTime = 0;
   router.push("/");
 };
 </script>
