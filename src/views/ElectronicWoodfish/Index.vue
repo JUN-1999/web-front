@@ -13,98 +13,117 @@
       id="muyuIMG"
       @click="hit"
       :class="scale ? 'scale' : ''"
-      src="@/assets/imgs/muyu.png"
+      src="@/assets/imgs/ElectronicWoodfish/muyu.png"
       alt=""
     />
     <img
       draggable="false"
       :style="{
         top: chuizi_position.top + 'px',
-        left: chuizi_position.left + 'px'
+        left: chuizi_position.left + 'px',
       }"
       :class="scale ? 'muyuhit' : ''"
       id="chuiziIMG"
-      src="@/assets/imgs/chuizi.png"
+      src="@/assets/imgs/ElectronicWoodfish/chuizi.png"
       alt=""
     />
     <div class="toLeft" @click="toLeft">返回</div>
 
-    <div class="auto" @click="auto">
-      <div class="auto-text">自动积德：{{ is_auto ? '开' : '关' }}</div>
+    <div class="auto" @click="autoClick">
+      <div class="auto-text">自动积德：{{ is_auto ? "开" : "关" }}</div>
       <img
         class="auto-img"
         :class="is_auto ? 'auto-img-a' : ''"
-        src="@/assets/imgs/OIP.png"
+        src="@/assets/imgs/ElectronicWoodfish/OIP.png"
         alt=""
       />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import muyuMP3 from '@/assets/audio/muyu.mp3'
-const router = useRouter()
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import muyuMP3 from "@/assets/audio/muyu.mp3";
+const router = useRouter();
 
-let num = ref(0)
-let scale = ref(false)
-let index = 0
-let addTextArr = ref<number[]>([])
-let timer: number = 0 //定时器
-let is_auto = ref(false)
+let num = ref(0);
+let scale = ref(false);
+let index = 0;
+let addTextArr = ref<number[]>([]);
+const audio = new Audio(muyuMP3);
+let is_auto = ref(false);
 
 const chuizi_position = ref({
   top: 0,
-  left: 0
-})
+  left: 0,
+});
 
 // 木鱼点击
-const hit = function () {
-  scale.value = true
-  addTextArr.value.push(index)
-  index++
-  num.value++
+const hit: () => Promise<string> = function () {
+  let isEnded = false; // 添加一个标志
+  scale.value = true;
+  addTextArr.value.push(index);
+  index++;
+  num.value++;
+  audio.pause();
+  audio.currentTime = 0;
+  audio.play();
 
-  const audio = new Audio(muyuMP3)
-  audio.play()
-
-  setTimeout(() => {
-    addTextArr.value.shift()
-    scale.value = false
-  }, 250)
-}
+  return new Promise((resolve) => {
+    audio.addEventListener("ended", () => {
+      if (!isEnded) {
+        // 检查标志
+        isEnded = true; // 设置标志为 true
+        addTextArr.value.shift();
+        scale.value = false;
+        setTimeout(() => {
+          console.log("sound ended" + Math.random());
+          resolve("sound ended");
+        }, 1000);
+      }
+    });
+  });
+};
 // 锤子跟随事件
 const chuiziMove = function () {
   window.onmousemove = function (e) {
-    chuizi_position.value.left = e.x
-    chuizi_position.value.top = e.y
-  }
-}
-chuiziMove()
+    chuizi_position.value.left = e.x;
+    chuizi_position.value.top = e.y;
+  };
+};
+chuiziMove();
 // 重置
 const reset = function () {
-  num.value = 0
-}
-// 自动积德
-const auto = function () {
-  if (!is_auto.value) {
-    is_auto.value = !is_auto.value
-    hit()
-    timer = setInterval(() => {
-      hit()
-    }, 1000)
-  } else {
-    is_auto.value = !is_auto.value
-    clearInterval(timer)
-    timer = 0
+  num.value = 0;
+};
+//
+const autoClick = function () {
+  is_auto.value = !is_auto.value;
+  if (is_auto.value) {
+    auto();
   }
-}
+};
+// 自动积德
+const auto = async function () {
+  await hit();
+  if (is_auto.value) {
+    console.log("auto");
+
+    auto();
+  }
+};
 
 // 返回
 const toLeft = function () {
-  router.push('/')
-}
+  router.push("/");
+};
 </script>
+
+<style>
+body {
+  overflow: hidden !important;
+}
+</style>
 <style lang="scss" scoped>
 .num {
   width: 100vw;
@@ -226,7 +245,8 @@ const toLeft = function () {
 }
 
 .auto-img-a {
-  animation: autoImgA 1s infinite;
+  animation: autoImgA linear 0.9s infinite;
+  animation-iteration-count: infinite;
 }
 
 @keyframes autoImgA {

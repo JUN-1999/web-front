@@ -14,14 +14,14 @@
         "
         @mouseenter="
           () => {
-            mpmouseenter(index)
+            mpmouseenter(index);
           }
         "
       >
         <div
           @click="
             () => {
-              toWeb(item)
+              toWeb(item);
             }
           "
           class="mp-name"
@@ -38,67 +38,71 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
-import { mpArrDefault } from './mp'
+import { mpArrDefault } from "./mp";
 
-const router = useRouter()
-let currentIndex = ref(0)
-let current2Index = ref(0)
+const router = useRouter();
+let currentIndex = ref(0);
+let current2Index = ref(0);
 
-const mpArr = mpArrDefault
-let is_show_mp_name = ref(true)
+const mpArr = mpArrDefault;
+let is_show_mp_name = ref(true);
 
 const radomIndex = function () {
-  if (!is_show_mp_name.value) return false
-  is_show_mp_name.value = false
-  current2Index.value = -1
+  if (!is_show_mp_name.value) return false;
+  is_show_mp_name.value = false;
+  current2Index.value = -1;
 
   // 圈数
-  let quan_num = 0
-  let max_num = mpArr.length
-  let index = 0
-  let step = 30
+  let quan_num = 0;
+  let max_num = mpArr.length;
+  let index = 0;
+  let step = 30;
 
   const createcurrentIndex = function (step: number) {
-    if (is_show_mp_name.value) return false
+    if (is_show_mp_name.value) return false;
     if (quan_num < 2) {
-      currentIndex.value = index
-      index++
+      currentIndex.value = index;
+      index++;
       if (index % max_num == 0) {
-        quan_num++
-        index = 0
+        quan_num++;
+        index = 0;
       }
     } else {
-      currentIndex.value = Math.floor(Math.random() * 18)
+      currentIndex.value = Math.floor(Math.random() * 18);
     }
-    let newstep = step + 3
-    if (newstep > 300) newstep = 300
+    let newstep = step + 3;
+    if (newstep > 300) newstep = 300;
     setTimeout(() => {
-      createcurrentIndex(newstep)
-    }, step)
-  }
-  createcurrentIndex(step)
+      createcurrentIndex(newstep);
+    }, step);
+  };
+  createcurrentIndex(step);
 
   setTimeout(() => {
-    is_show_mp_name.value = true
-  }, 6000)
-}
+    is_show_mp_name.value = true;
+  }, 6000);
+};
 
 const toWeb = function (item: any) {
-  window.open(item.url, '_blank')
-}
+  window.open(item.url, "_blank");
+};
 const mpmouseenter = function (index: number) {
-  current2Index.value = index
-}
+  current2Index.value = index;
+};
 const toLeft = function () {
-  router.push('/')
-}
+  router.push("/");
+};
 </script>
-
+<style>
+body {
+  overflow: hidden !important;
+}
+</style>
 <style lang="scss" scoped>
-@import url('./icon_mp.scss');
+@import url("./icon_mp.scss");
 
 .main {
   position: relative;
@@ -109,7 +113,7 @@ const toLeft = function () {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/imgs/jw3/jw3-bg.jpg');
+  background-image: url("@/assets/imgs/jw3/jw3-bg.jpg");
   background-size: 100% 100%;
   background-position: center center;
   background-repeat: no-repeat;
@@ -137,7 +141,7 @@ const toLeft = function () {
 }
 .btn {
   font-size: 30px;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   font-weight: 700;
   color: #f2f2f2;
 
@@ -154,7 +158,7 @@ const toLeft = function () {
   left: -22px;
   width: 150px;
   height: 150px;
-  background-image: url('@/assets/imgs/jw3/icon-mpact.png');
+  background-image: url("@/assets/imgs/jw3/icon-mpact.png");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: 100%;

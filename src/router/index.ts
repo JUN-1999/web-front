@@ -20,6 +20,11 @@ const router = createRouter({
       name: 'Jw3',
       component: () => import('../views/Jw3/Index.vue')
     },
+    {
+      path: '/ScrollingTimeline',
+      name: 'ScrollingTimeline',
+      component: () => import('../views/ScrollingTimeline/Index.vue')
+    },
     { path: '/:catchAll(.*)', redirect: '/' }
   ]
 })

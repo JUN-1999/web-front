@@ -11,16 +11,21 @@
 <script setup lang="ts">
 import HomeItem from "../components/HomeItem.vue";
 // 引入图片
-import muyuIMG from "../assets/imgs/muyu.png";
+import muyuIMG from "../assets/imgs/ElectronicWoodfish/muyu.png";
 import jw3IMG from "../assets/imgs/jw3/jw3.png";
 
 const items = [
   { name: "电子木鱼", pic: muyuIMG, path: "/ElectronicWoodfish" },
   { name: "剑三职业选择", pic: jw3IMG, path: "/Jw3" },
+  { name: "滚动时间轴", pic: jw3IMG, path: "/ScrollingTimeline" },
 ];
 </script>
 
 <style lang="scss" scoped>
+body {
+  overflow: hidden;
+}
+
 .box {
   box-sizing: border-box;
   position: fixed;
