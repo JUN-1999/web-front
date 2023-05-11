@@ -18,6 +18,7 @@ const items = [
   { name: "电子木鱼", pic: muyuIMG, path: "/ElectronicWoodfish" },
   { name: "剑三职业选择", pic: jw3IMG, path: "/Jw3" },
   { name: "滚动时间轴", pic: jw3IMG, path: "/ScrollingTimeline" },
+  { name: "树屋", pic: jw3IMG, path: "/TreeHole" },
 ];
 </script>
 
