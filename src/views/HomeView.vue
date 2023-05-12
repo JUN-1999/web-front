@@ -13,12 +13,14 @@ import HomeItem from "../components/HomeItem.vue";
 // 引入图片
 import muyuIMG from "../assets/imgs/ElectronicWoodfish/muyu.png";
 import jw3IMG from "../assets/imgs/jw3/jw3.png";
+import Scrolling from '../assets/imgs/ScrollingTimeline/BG.jpg'
+import treehole from '../assets/imgs/TreeHole/TreeHoleBG3.webp'
 
 const items = [
   { name: "电子木鱼", pic: muyuIMG, path: "/ElectronicWoodfish" },
   { name: "剑三职业选择", pic: jw3IMG, path: "/Jw3" },
-  { name: "滚动时间轴", pic: jw3IMG, path: "/ScrollingTimeline" },
-  { name: "树屋", pic: jw3IMG, path: "/TreeHole" },
+  { name: "滚动时间轴", pic: Scrolling, path: "/ScrollingTimeline" },
+  { name: "树屋", pic: treehole, path: "/TreeHole" },
 ];
 </script>
 

@@ -8,7 +8,7 @@
                 <div class="iconfont icon-denglu" v-show="is_register_icon"></div>
             </div>
         </div>
-        <img class="bg-img" src="@/assets/imgs/TreeHole/wallhaven-kwrx3q.png" alt="">
+        <img class="bg-img" src="@/assets/imgs/TreeHole/wallhaven-ex9gwo.png" alt="">
     </div>
 </template>
 
