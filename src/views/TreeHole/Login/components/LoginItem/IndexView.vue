@@ -17,17 +17,18 @@
     </div>
 </template>
 <script setup lang='ts'>
-import { defineProps, ref } from 'vue';
-import { useRouter } from 'vue-router'
+import {  ref,defineEmits } from 'vue';
+
 import { useTreeHoleUserStore } from '@/stores/ThreeHoleUser'
 const threeHoleUser = useTreeHoleUserStore();
-const router = useRouter();
+
 const props = defineProps({
     zindex: {
         type: Number,
         required: true
     }
 })
+const emits=defineEmits(['login-success'])
 const form = ref({
     account: '',
     password: ''
@@ -52,9 +53,8 @@ const loginBtn = async () => {
     const loginRes = await threeHoleUser.login(form.value)
     if (loginRes) {
         // 登录成功！
-        console.log('router', router);
+        emits('login-success');
 
-        router.push('/Treehole/index')
     }
 }
 
@@ -72,8 +72,6 @@ const loginBtn = async () => {
     align-items: center;
     animation: changA 1s linear;
     background-color: #2398db;
-
-
 
     .input-title {
         font-size: 20px;

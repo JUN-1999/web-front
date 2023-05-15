@@ -40,7 +40,7 @@
     </div>
 </template>
 <script setup lang='ts'>
-import { defineProps, defineEmits, ref } from 'vue';
+import {  defineEmits, ref } from 'vue';
 import { sendAuthCode, isAccountOnly, isEmailOnly, postRegisterApi } from '@/api/TreeHole/user'
 let second = ref(60);// 倒计时
 let is_second = ref(false);// 是否开启倒计时
