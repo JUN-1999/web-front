@@ -30,7 +30,19 @@ const router = createRouter({
       name: 'TreeHole',
       redirect: '/TreeHole/index',
       children: [
-        { path: 'index', name: 'index', component: () => import('@/views/TreeHole/Index/IndexView.vue') },
+        {
+          path: 'index',
+          name: 'index',
+          redirect: '/TreeHole/index/home',
+          component: () => import('@/views/TreeHole/Index/IndexView.vue'),
+          children: [
+            {
+              path: 'home',
+              name: 'home',
+              component: () => import('@/views/TreeHole/Index/Home/HomeView.vue'),
+            }
+          ]
+        },
         { path: 'login', name: 'login', component: () => import('@/views/TreeHole/Login/IndexView.vue') }
       ]
     },

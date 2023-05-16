@@ -17,7 +17,7 @@
     </div>
 </template>
 <script setup lang='ts'>
-import {  ref,defineEmits } from 'vue';
+import {  ref } from 'vue';
 
 import { useTreeHoleUserStore } from '@/stores/ThreeHoleUser'
 const threeHoleUser = useTreeHoleUserStore();
@@ -71,7 +71,8 @@ const loginBtn = async () => {
     justify-content: center;
     align-items: center;
     animation: changA 1s linear;
-    background-color: #2398db;
+    background-color:#2398db;
+
 
     .input-title {
         font-size: 20px;
@@ -84,14 +85,14 @@ const loginBtn = async () => {
     .log-btn {
         cursor: pointer;
         margin-top: 50px;
-        width: 70px;
+        width: 250px;
         height: 50px;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 5px;
         background-color: #f2f2f2;
-        box-shadow: 2px 2px 0px 0px #9e9d9d;
+        box-shadow: 0px 0px 2px 2px #f2f2f2;
     }
 
     input {

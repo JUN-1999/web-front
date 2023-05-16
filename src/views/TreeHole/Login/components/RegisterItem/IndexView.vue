@@ -40,7 +40,7 @@
     </div>
 </template>
 <script setup lang='ts'>
-import {  defineEmits, ref } from 'vue';
+import { ref } from 'vue';
 import { sendAuthCode, isAccountOnly, isEmailOnly, postRegisterApi } from '@/api/TreeHole/user'
 let second = ref(60);// 倒计时
 let is_second = ref(false);// 是否开启倒计时
@@ -275,14 +275,14 @@ const register = async () => {
 
     .log-btn {
         cursor: pointer;
-        width: 110px;
+        width: 250px;
         height: 50px;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 5px;
         background-color: #f2f2f2;
-        box-shadow: 2px 2px 0px 0px #9e9d9d;
+        box-shadow: 0px 0px 2px 2px #f2f2f2;
     }
 
     .top-img {

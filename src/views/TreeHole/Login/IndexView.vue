@@ -63,9 +63,7 @@ const changeIsLogin = function () {
 }
 const loginSuccess = function () {
     is_login_success.value = true;
-    setTimeout(() => {
-        router.push('/Treehole/index')
-    }, 300);
+    router.push('/Treehole/index')
 }
 
 </script>
@@ -84,6 +82,7 @@ const loginSuccess = function () {
         left: 50%;
         transform: translate(-50%, -50%);
         background-color: rgba($color: #fff, $alpha: .5);
+        backdrop-filter: blur(2px);
         width: 60vw;
         border-radius: 10px;
         overflow: hidden;
@@ -102,7 +101,7 @@ const loginSuccess = function () {
                 height: 80%;
             }
 
- 
+
         }
 
         .input-box {
