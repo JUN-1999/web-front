@@ -2,7 +2,9 @@
     <div :class="{ login_success: is_login_success }" class="box">
         <div class="center">
             <div class="news">
-                <img src="@/assets/imgs/TreeHole/login_news.svg" alt="">
+                <!-- <img src="@/assets/imgs/TreeHole/login_news.svg" alt=""> -->
+                <canvas id="canvas3d"></canvas>
+                <img v-show="loadding_show" class="loadding" src="@/assets/imgs/TreeHole/loading.png" alt="">
             </div>
             <div class="input-box">
                 <LoginItem @login-success="loginSuccess" :zindex="is_login_icon ? 1 : 0" v-if="is_login"></LoginItem>
@@ -12,20 +14,20 @@
                     <div class="iconfont icon-zhuce1" v-show="is_login_icon"></div>
                     <div class="iconfont icon-dengluzhanghao" v-show="is_register_icon"></div>
                     <div :style="{
-                        '--color': is_login_icon ? '#2398db' : '#87ceeb'
+                        '--color': is_login_icon ? '#8cce72' : '#7bb835'
                     }" class="changebox-text">{{ is_login_icon ? '去注册' : '去登录' }}</div>
                 </div>
             </div>
         </div>
 
-        <img class="bg-img" src="@/assets/imgs/TreeHole/wallhaven-zx6rdw.jpg" alt="">
+        <img class="bg-img" src="@/assets/imgs/TreeHole/wallhaven-0wlq8p.jpg" alt="">
     </div>
 </template>
 
 <script setup lang='ts'>
 import LoginItem from './components/LoginItem/IndexView.vue';
 import RegisterItem from './components/RegisterItem/IndexView.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router'
 const router = useRouter();
 let is_login = ref(true);
@@ -34,6 +36,7 @@ let is_register = ref(false);
 let is_register_icon = ref(false);
 let is_change_tab = ref(true);
 let is_login_success = ref(false); //登录成功标识
+let loadding_show = ref(false);//加载动画
 
 const changeIsLogin = function () {
     if (is_change_tab.value) {
@@ -63,9 +66,30 @@ const changeIsLogin = function () {
 }
 const loginSuccess = function () {
     is_login_success.value = true;
-    router.push('/Treehole/index')
+    router.push('/Treehole')
 }
-
+import { Application } from '@splinetool/runtime';
+const initSpline = () => {
+    return new Promise((resolve, reject) => {
+        const canvas = document.getElementById('canvas3d') as HTMLCanvasElement;
+        const app = new Application(canvas);
+        app.load('spline/scene.splinecode').then(() => {
+            loadding_show.value = false;
+            canvas.style.opacity = '1';
+            resolve('渲染完成');
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
+onMounted(() => {
+    loadding_show.value = true;
+    initSpline().then(res => {
+        console.log(res);
+    });
+    console.log('123');
+    
+})
 </script>
 <style lang='scss' scoped>
 .box {
@@ -78,6 +102,7 @@ const loginSuccess = function () {
         height: 70vh;
         display: flex;
         position: absolute;
+        z-index: 1;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -95,13 +120,50 @@ const loginSuccess = function () {
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
 
             img {
                 width: 80%;
                 height: 80%;
             }
 
+            #canvas3d {
+                opacity: 0;
+            }
 
+            .loadding {
+                width: 40px;
+                height: 40px;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 1;
+                transform: .3s;
+                animation: rotate 1s linear infinite;
+            }
+
+            @keyframes rotate {
+                0% {
+                    -webkit-transform: rotate(0deg);
+                }
+
+                25% {
+                    -webkit-transform: rotate(90deg);
+                }
+
+                50% {
+                    -webkit-transform: rotate(180deg);
+                }
+
+                75% {
+                    -webkit-transform: rotate(270deg);
+                }
+
+                100% {
+                    -webkit-transform: rotate(360deg);
+                }
+            }
         }
 
         .input-box {
@@ -178,6 +240,7 @@ const loginSuccess = function () {
     .bg-img {
         width: 100%;
         height: 100%;
+        filter: blur(3px);
     }
 
 

@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@splinetool/runtime": "^0.9.336",
     "axios": "^1.4.0",
     "normalize.css": "^8.0.1",
     "pinia": "^2.0.32",

@@ -71,7 +71,7 @@ const loginBtn = async () => {
     justify-content: center;
     align-items: center;
     animation: changA 1s linear;
-    background-color:#2398db;
+    background-color:#8cce72;
 
 
     .input-title {

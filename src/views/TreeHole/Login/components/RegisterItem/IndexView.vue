@@ -209,13 +209,13 @@ const register = async () => {
     justify-content: center;
     align-items: center;
     animation: changA 1s linear;
-    background-color: skyblue;
+    background-color: #7bb835;
 
     .form-item {
         position: relative;
         display: flex;
         align-items: center;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
 
         // 标题
         .input-title {
@@ -224,7 +224,7 @@ const register = async () => {
             border: 1px dashed #f2f2f2;
             padding: 10px;
             margin-right: 20px;
-            width: 90px;
+            width: 120px;
             text-align: center;
         }
 

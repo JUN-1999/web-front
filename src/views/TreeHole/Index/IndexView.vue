@@ -1,29 +1,24 @@
 <template>
     <div class="treehole">
+        <div class="EditArticle" @click="EditArticle">
+            <img src="@/assets/imgs/TreeHole/EditArticle1.png" alt="新增瓜">
+        </div>
         <RouterView></RouterView>
 
-        
-         <label for="uploadImg"
-            style="width: 100px;height: 50px;background-color: #fff;border-radius: 15px;display: flex;justify-content: center;align-items: center;">上传测试</label>
-        <input ref="inputFile" @change="inputChange" type="file" name="" id="uploadImg" style="display: none;"> 
         <!-- 冒泡泡 -->
         <!-- <bubbling></bubbling> -->
     </div>
 </template>
 <script setup lang='ts'>
-import { ref } from 'vue';
-import { uploadFile } from '@/api/common/file'
+import { useRouter } from 'vue-router'
 import bubbling from '../components/bubbling.vue'
+const router = useRouter();
+const EditArticle = () => [
+    router.push('/TreeHole/TreeHoleIndex/TreeHoleEdit')
+]
 
 
-const inputFile = ref<HTMLInputElement | null>(null)
-const inputChange = async (e) => {
-    const file = (inputFile.value?.files && inputFile.value.files[0]) as Blob;
-    const formData = new FormData();
-    formData.append('file', file)
-    let res = await uploadFile(formData)
-    console.log(res);
-}
+
 </script>
 <style lang='scss' scoped>
 .treehole {
@@ -36,7 +31,20 @@ const inputChange = async (e) => {
     justify-content: center;
     align-items: center;
 
-
+    // 添加记录
+    .EditArticle{
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+        background-color: #fff;
+        position: fixed;
+        bottom: 2vh;
+        right: 2vw;
+        img{
+            width: 100%;
+            height: 100%;
+        }
+    }
 }
 
 @keyframes intoA {

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import { useTreeHoleUserStore } from '@/stores/ThreeHoleUser'
 
 const router = createRouter({
@@ -8,38 +7,43 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: () => import('@/views/HomeView.vue')
     },
     {
       path: '/ElectronicWoodfish',
       name: 'ElectronicWoodfish',
-      component: () => import('../views/ElectronicWoodfish/Index.vue')
+      component: () => import('@/views/ElectronicWoodfish/Index.vue')
     },
     {
       path: '/Jw3',
       name: 'Jw3',
-      component: () => import('../views/Jw3/Index.vue')
+      component: () => import('@/views/Jw3/Index.vue')
     },
     {
       path: '/ScrollingTimeline',
       name: 'ScrollingTimeline',
-      component: () => import('../views/ScrollingTimeline/Index.vue')
+      component: () => import('@/views/ScrollingTimeline/Index.vue')
     },
     {
       path: '/TreeHole',
       name: 'TreeHole',
-      redirect: '/TreeHole/index',
+      redirect: '/TreeHole/TreeHoleIndex/TreeHoleHome',
       children: [
         {
-          path: 'index',
-          name: 'index',
-          redirect: '/TreeHole/index/home',
+          path: 'TreeHoleIndex',
+          name: 'TreeHoleIndex',
+          redirect: '/TreeHole/TreeHoleIndex/TreeHoleHome',
           component: () => import('@/views/TreeHole/Index/IndexView.vue'),
           children: [
             {
-              path: 'home',
-              name: 'home',
+              path: 'TreeHoleHome',
+              name: 'TreeHoleHome',
               component: () => import('@/views/TreeHole/Index/Home/HomeView.vue'),
+            },
+            {
+              path: 'TreeHoleEdit',
+              name: 'TreeHoleEdit',
+              component: () => import('@/views/TreeHole/Index/EditArticle/IndexView.vue'),
             }
           ]
         },
@@ -51,8 +55,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
+
   // 判断进入树洞是否登录（token是否有值）
   if (to.path.includes('TreeHole') && to.path != '/TreeHole/login') {
+
     const { token } = useTreeHoleUserStore();
     if (!token) {
       return '/TreeHole/login'
