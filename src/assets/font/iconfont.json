@@ -6,6 +6,13 @@
   "description": "树洞",
   "glyphs": [
     {
+      "icon_id": "22529994",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e77e",
+      "unicode_decimal": 59262
+    },
+    {
       "icon_id": "9430532",
       "name": "关  闭",
       "font_class": "guanbi1",

@@ -243,7 +243,7 @@ const register = async () => {
         input {
             all: initial;
             width: 300px;
-            height: 40px;
+            height: 30px;
             border-radius: 5px;
             padding: 5px;
             background-color: #fff;

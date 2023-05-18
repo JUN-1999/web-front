@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+
 import HomeItem from "../components/HomeItem.vue";
 // 引入图片
 import muyuIMG from "../assets/imgs/ElectronicWoodfish/muyu.png";

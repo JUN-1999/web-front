@@ -1,18 +1,51 @@
 <template>
     <div class="wjc-upload" ref="wjcUpload">
         <div class="input-label" v-for="item in imgList" :key="item.name">
-            <ViewImg :src="item.url" :showDelete="true" @imgDelete="imgDelete" />
+            <ViewImg  :src="item.url" :showDelete="true" @imgDelete="imgDelete" />
         </div>
         <label for="uploadImg" class="input-label">
             <i class="iconfont icon-tianjia"></i>
         </label>
-        <input ref="inputFile" @change="inputChange" type="file" name="" id="uploadImg" style="display: none;">
+        <input :accept="accept" ref="inputFile" @change="inputChange" type="file" name="" id="uploadImg" style="display: none;">
     </div>
 </template>
 <script setup lang='ts'>
-import { ref } from 'vue';
-import { uploadFile } from '@/api/common/file'
+import { ref, watch } from 'vue';
+import { uploadFile } from '@/api/common/file';
 import ViewImg from './ViewImg.vue';
+// 图片列表
+interface IIMG {
+    name: string,
+    url: string,
+}
+interface IProps {
+    pics: IIMG[];
+    accept?: string
+}
+// ts 不适用默认值使用
+// const props = defineProps<IProps>();
+
+// ts 设置默认值
+const props = withDefaults(
+    defineProps<IProps>(),
+    {
+        pics: () => { return [] },
+        accept: 'image/*'
+    }
+)
+const emits = defineEmits(['uploadSuccess'])
+watch(
+    () => props.pics,
+    (newVal: IIMG[], oldVal: IIMG[]) => {
+        imgList.value = newVal.map(item => {
+            return {
+                name: item.name,
+                url: item.url,
+            };
+        });
+    }
+);
+
 // 上传功能
 const inputFile = ref<HTMLInputElement | null>(null)
 const inputChange = async (e) => {
@@ -25,15 +58,13 @@ const inputChange = async (e) => {
             name: res.data.name,
             url: res.data.url,
         })
+        emits('uploadSuccess', imgList.value)
     }
 }
-// 图片列表
-interface IIMG {
-    name: string,
-    url: string,
-}
+
 const wjcUpload = ref();
 const imgList = ref<IIMG[]>([]);//图片列表
+
 const imgDelete = (src: string) => {
     imgList.value = imgList.value.filter(item => {
         return item.url != src

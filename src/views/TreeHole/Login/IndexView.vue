@@ -2,9 +2,9 @@
     <div :class="{ login_success: is_login_success }" class="box">
         <div class="center">
             <div class="news">
-                <!-- <img src="@/assets/imgs/TreeHole/login_news.svg" alt=""> -->
-                <canvas id="canvas3d"></canvas>
-                <img v-show="loadding_show" class="loadding" src="@/assets/imgs/TreeHole/loading.png" alt="">
+                <img src="@/assets/imgs/TreeHole/login_news.svg" alt="">
+                <!-- <canvas id="canvas3d"></canvas>
+                <img v-show="loadding_show" class="loadding" src="@/assets/imgs/TreeHole/loading.png" alt=""> -->
             </div>
             <div class="input-box">
                 <LoginItem @login-success="loginSuccess" :zindex="is_login_icon ? 1 : 0" v-if="is_login"></LoginItem>
@@ -84,9 +84,9 @@ const initSpline = () => {
 };
 onMounted(() => {
     loadding_show.value = true;
-    initSpline().then(res => {
-        console.log(res);
-    });
+    // initSpline().then(res => {
+    //     console.log(res);
+    // });
     console.log('123');
     
 })
