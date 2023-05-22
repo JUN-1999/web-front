@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { useTreeHoleUserStore } from '@/stores/ThreeHoleUser'
+import { useTreeHoleUserStore } from '@/stores/TreeHoleUser'
 import router from '@/router';
 import { ElMessage } from 'element-plus'
 

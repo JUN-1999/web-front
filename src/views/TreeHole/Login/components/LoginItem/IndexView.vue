@@ -19,7 +19,7 @@
 <script setup lang='ts'>
 import {  ref } from 'vue';
 
-import { useTreeHoleUserStore } from '@/stores/ThreeHoleUser'
+import { useTreeHoleUserStore } from '@/stores/TreeHoleUser'
 const threeHoleUser = useTreeHoleUserStore();
 
 const props = defineProps({

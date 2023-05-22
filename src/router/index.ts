@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import { useTreeHoleUserStore } from '@/stores/ThreeHoleUser'
+import { useTreeHoleUserStore } from '@/stores/TreeHoleUser'
+import type { IUserInfo } from '@/type/TreeHole/user'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -41,9 +42,13 @@ const router = createRouter({
               component: () => import('@/views/TreeHole/Index/Home/HomeView.vue'),
             },
             {
-              path: 'TreeHoleEdit',
-              name: 'TreeHoleEdit',
-              component: () => import('@/views/TreeHole/Index/EditArticle/IndexView.vue'),
+              path: 'ArticleEdit/:id',
+              name: 'ArticleEdit',
+              component: () => import('@/views/TreeHole/Index/ArticleEdit/IndexView.vue'),
+            }, {
+              path: 'ArticleDetail/:id',
+              name: 'ArticleDetail',
+              component: () => import('@/views/TreeHole/Index/ArticleDetail/IndexView.vue')
             }
           ]
         },
@@ -60,10 +65,14 @@ router.beforeEach((to, from) => {
   if (to.path.includes('TreeHole') && to.path != '/TreeHole/login') {
 
     let { token } = useTreeHoleUserStore();
-    const { setToken } = useTreeHoleUserStore();
+    const { setToken, setUserInfo } = useTreeHoleUserStore();
+
     if (!token) {
       token = localStorage.getItem('token') as string;
+      const userInfo = JSON.parse(localStorage.getItem('userInfo') as string) as IUserInfo;
       setToken(token)
+      setUserInfo(userInfo)
+
     }
     if (!token) {
       return '/TreeHole/login'

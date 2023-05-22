@@ -3,7 +3,7 @@
     <div class="table">
         <section class="header">
             <h1>瓜大棚<img src="@/assets/imgs/TreeHole/watermelon.png" alt=""></h1>
-            <div class="EditArticle" @click="EditArticle">
+            <div class="ArticleEdit" @click="ArticleEdit">
                 <div class="text">种瓜</div>
                 <img src="@/assets/imgs/TreeHole/EditArticle1.png" alt="新增瓜">
             </div>
@@ -31,13 +31,14 @@
                                 {{ item.TITLE }}
                             </div>
                             <div class="brief-text" v-html="item.CONTENT"></div>
-                            <div class="brief-imgs" >
-                                <ViewImg v-for="(pic, index) in item.PICS" :key="index" class="brief-img" :src="pic.url"></ViewImg>
+                            <div class="brief-imgs">
+                                <ViewImg v-for="(pic, index) in item.PICS" :key="index" class="brief-img" :src="pic.url">
+                                </ViewImg>
                             </div>
                         </td>
-                        <td>{{ item.ADD_TIME }}</td>
+                        <td>{{ item.UPDATE_TIME || item.ADD_TIME }}</td>
                         <td>
-                            <p class="button">查看</p>
+                            <p class="button" @click="articleDetail(item)">查看</p>
                         </td>
                     </tr>
                 </tbody>
@@ -49,34 +50,41 @@
 import { articleList } from '@/api/TreeHole/article'
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue';
-import ViewImg from '@/components/ViewImg.vue'
-
+import ViewImg from '@/components/ViewImg.vue';
+// 文章的每个类型
+import type { IArticleItem } from '@/type/TreeHole/article';
+const router = useRouter();
 
 let page = ref(1); // 页码
 let pageSize = ref(5); // 页数
-let article_list = ref<any[]>([]);//文章列表
+let article_list = ref<IArticleItem[]>([]);//文章列表
 
-const router = useRouter();
-const EditArticle = () => [
-    router.push('/TreeHole/TreeHoleIndex/TreeHoleEdit')
+// 新增文章
+const ArticleEdit = () => [
+    router.push('/TreeHole/TreeHoleIndex/ArticleEdit/0')
 ]
+// 查看文章详情
+const articleDetail = async (data: IArticleItem) => {
+    router.push(`/TreeHole/TreeHoleIndex/ArticleDetail/${data.ARTICLE_UUID}`)
+}
+// 获得文章列表
 const getArticleList = async () => {
     let res = await articleList({
         page: page.value,
         pageSize: pageSize.value
     });
     let data = res.data.data;
-    data = data.map((item) => {
-        item.PICS = JSON.parse(item.PICS).slice(0,3)
-        console.log(item);
-        
+    data = data.map((item: IArticleItem) => {
+        item.PICS = JSON.parse(item.PICS).slice(0, 3)
         return item;
     })
     article_list.value = data;
 }
+
 onMounted(async () => {
     await getArticleList();
 })
+
 </script>
 <style lang='scss' scoped>
 .table {
@@ -110,7 +118,7 @@ onMounted(async () => {
         }
 
         // 添加记录
-        .EditArticle {
+        .ArticleEdit {
             position: absolute;
             width: 120px;
             height: 50px;
@@ -212,7 +220,7 @@ onMounted(async () => {
         }
 
         tbody tr .brief {
-            width: 850px;
+            width: 750px;
 
             .brief-title {
                 font-size: 24px;
