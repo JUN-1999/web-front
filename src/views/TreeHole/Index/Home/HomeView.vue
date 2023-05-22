@@ -23,30 +23,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in 18" :key="item">
-                        <td>name{{ item }} <img class="avatar" src="@/assets/imgs/TreeHole/TreeHoleBG2.webp" alt="">
+                    <tr v-for="item in article_list" :key="item.ARTICLE_UUID">
+                        <td>{{ item.ACCOUNT }} <img class="avatar" :src="item.AVATAR" alt="">
                         </td>
                         <td class="brief">
                             <div class="brief-title">
-                                标题标题标题标题
+                                {{ item.TITLE }}
                             </div>
-                            <div class="brief-text"> {{ item % 2 == 0 ? '一点点内容' :
-                                '内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容'
-                            }}</div>
-                            <div class="brief-imgs">
-                                <ViewImg class="brief-img"
-                                    src="https://img0.baidu.com/it/u=242767209,2541342896&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500">
-                                </ViewImg>
-                                <ViewImg class="brief-img"
-                                    src="https://img2.baidu.com/it/u=3867960631,2923014190&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500">
-                                </ViewImg>
-                                <ViewImg class="brief-img"
-                                    src="https://img0.baidu.com/it/u=238562946,3548524832&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889">
-                                </ViewImg>
-
+                            <div class="brief-text" v-html="item.CONTENT"></div>
+                            <div class="brief-imgs" >
+                                <ViewImg v-for="(pic, index) in item.PICS" :key="index" class="brief-img" :src="pic.url"></ViewImg>
                             </div>
                         </td>
-                        <td>2023/5/15</td>
+                        <td>{{ item.ADD_TIME }}</td>
                         <td>
                             <p class="button">查看</p>
                         </td>
@@ -57,12 +46,37 @@
     </div>
 </template>
 <script setup lang='ts'>
-import ViewImg from '@/components/ViewImg.vue'
+import { articleList } from '@/api/TreeHole/article'
 import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue';
+import ViewImg from '@/components/ViewImg.vue'
+
+
+let page = ref(1); // 页码
+let pageSize = ref(5); // 页数
+let article_list = ref<any[]>([]);//文章列表
+
 const router = useRouter();
 const EditArticle = () => [
     router.push('/TreeHole/TreeHoleIndex/TreeHoleEdit')
 ]
+const getArticleList = async () => {
+    let res = await articleList({
+        page: page.value,
+        pageSize: pageSize.value
+    });
+    let data = res.data.data;
+    data = data.map((item) => {
+        item.PICS = JSON.parse(item.PICS).slice(0,3)
+        console.log(item);
+        
+        return item;
+    })
+    article_list.value = data;
+}
+onMounted(async () => {
+    await getArticleList();
+})
 </script>
 <style lang='scss' scoped>
 .table {
@@ -102,7 +116,7 @@ const EditArticle = () => [
             height: 50px;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             background-color: #fff;
             border-radius: 20px;
             display: flex;
@@ -209,6 +223,8 @@ const EditArticle = () => [
                 margin-bottom: 10px;
                 color: #6d757a;
                 font-size: 20px;
+                max-height: 200px;
+                overflow: hidden;
             }
 
             .brief-imgs {

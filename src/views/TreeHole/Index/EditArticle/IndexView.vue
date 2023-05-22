@@ -21,7 +21,7 @@
                 <WjcUpload @upload-success="uploadSuccess" :pics="form.pics"></WjcUpload>
             </el-form-item>
             <el-form-item label="">
-                <el-button type="success" class="publish-btn">发布</el-button>
+                <el-button @click="postUpdateArticle" type="success" class="publish-btn">发布</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -29,13 +29,14 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { updateArticle } from '@/api/TreeHole/article'
+
 import WjcUpload from '@/components/WjcUpload.vue';
 import WjcEditor from '@/components/WjcEditor.vue';
 interface IIMG {
     name: string,
     url: string,
 }
-
 const router = useRouter();
 
 const form = ref<{
@@ -55,6 +56,11 @@ const editorChange = (html: string) => {
     form.value.content = html
 }
 const goBack = () => { router.go(-1) }
+// 发布、修改文章
+const postUpdateArticle = async () => {
+    const res = await updateArticle(form.value, 0);
+    console.log(res);
+}
 
 </script>
 <style lang='scss' scoped>

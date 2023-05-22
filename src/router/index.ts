@@ -59,7 +59,12 @@ router.beforeEach((to, from) => {
   // 判断进入树洞是否登录（token是否有值）
   if (to.path.includes('TreeHole') && to.path != '/TreeHole/login') {
 
-    const { token } = useTreeHoleUserStore();
+    let { token } = useTreeHoleUserStore();
+    const { setToken } = useTreeHoleUserStore();
+    if (!token) {
+      token = localStorage.getItem('token') as string;
+      setToken(token)
+    }
     if (!token) {
       return '/TreeHole/login'
     } else {

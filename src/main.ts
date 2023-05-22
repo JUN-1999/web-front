@@ -6,6 +6,7 @@ import router from './router'
 
 import 'normalize.css'
 import './assets/css/main.css'
+import 'element-plus/dist/index.css'
 
 const app = createApp(App)
 

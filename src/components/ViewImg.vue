@@ -30,7 +30,6 @@ let show = ref(false);
 let show_tip = ref(false);
 
 const changeIMG = (flag: boolean) => {
-    console.log(flag);
     show.value = flag;
 }
 const imgEnter = () => { show_tip.value = true }
