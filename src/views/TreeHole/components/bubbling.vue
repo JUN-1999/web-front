@@ -9,7 +9,7 @@
     </div>
 </template>
 <script setup lang='ts'>
-import type { IBubblingItem } from '../types/bubbling'
+import type { IBubblingItem } from '@/type/TreeHole/bubbling'
 import { ref } from 'vue';
 const list = ref([
     { id: 1, value: '内容1内容1内容1内容1内容1内容1' },
@@ -67,9 +67,7 @@ const BubblingChange = function (data: Bubbling, flag: boolean) {
     overflow: hidden;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    background-image: url('@/assets/imgs/TreeHole/sea2.jpg');
-    background-size: auto;
-    background-repeat: no-repeat;
+    border: 1px solid skyblue;
 
     .bubbling-item {
         width: 180px;

@@ -24,7 +24,8 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in article_list" :key="item.ARTICLE_UUID">
-                        <td>{{ item.ACCOUNT }} <img class="avatar" :src="item.AVATAR" alt="">
+                        <td class="user-info"> <img class="avatar" :src="item.AVATAR" alt="" /><span>{{ item.ACCOUNT
+                        }}</span>
                         </td>
                         <td class="brief">
                             <div class="brief-title">
@@ -32,8 +33,10 @@
                             </div>
                             <div class="brief-text" v-html="item.CONTENT"></div>
                             <div class="brief-imgs">
-                                <ViewImg v-for="(pic, index) in item.PICS" :key="index" class="brief-img" :src="pic.url">
-                                </ViewImg>
+                                <!-- <ViewImg v-for="(pic, index) in item.PICS" :key="index" class="brief-img" :src="pic.url">
+                                </ViewImg> -->
+                                <el-image lazy v-for="(pic, index) in item.PICS" class="brief-img" :key="index"
+                                    :src="pic.url" :preview-src-list="[pic.url]" :zoom-rate="1" fit="cover" />
                             </div>
                         </td>
                         <td>{{ item.UPDATE_TIME || item.ADD_TIME }}</td>
@@ -182,6 +185,27 @@ onMounted(async () => {
         border-radius: 10px;
         overflow: auto;
 
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #222;
+            font-size: 24px;
+        }
+
+        td .avatar {
+            width: 150px;
+            height: 150px;
+            margin-right: 10px;
+            border-radius: 10px;
+            vertical-align: middle;
+            margin-left: 10px;
+            padding: 15px;
+            border: 1px solid rgba($color: #575353, $alpha: .5);
+            margin-bottom: 20px;
+        }
 
         &::-webkit-scrollbar {
             width: 0px;
@@ -193,14 +217,7 @@ onMounted(async () => {
             width: 100%;
         }
 
-        td .avatar {
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
-            border-radius: 50%;
-            vertical-align: middle;
-            margin-left: 10px;
-        }
+
 
         table,
         th,
@@ -223,8 +240,9 @@ onMounted(async () => {
             width: 750px;
 
             .brief-title {
-                font-size: 24px;
+                font-size: 30px;
                 margin-bottom: 15px;
+                font-weight: 800;
             }
 
             .brief-text {

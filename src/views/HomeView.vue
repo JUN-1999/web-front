@@ -57,6 +57,7 @@ body {
     background-color: #f5f5f5;
     overflow: hidden;
   }
+
   /*定义滚动条轨道
  内阴影+圆角*/
   &::-webkit-scrollbar-track {
@@ -65,6 +66,7 @@ body {
     background-color: #f5f5f5;
     overflow: hidden;
   }
+
   /*定义滑块
  内阴影+圆角*/
   &::-webkit-scrollbar-thumb {
@@ -74,14 +76,33 @@ body {
     overflow: hidden;
   }
 }
+
 .home {
   width: 100vw;
   height: 100vh;
-  background-image: url("../assets/imgs/wallpaper.jpg");
-  background-size: 100% 100%;
+  // background: linear-gradient(-45deg, #ee7752, #dd7ba1, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, #bbff00, #69d123, #33cc54, #1f90c4, #0084ff);
+  background-size: 600% 600%;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: 0% 0%;
+  animation: APosition 8s linear infinite;
 }
+
+@keyframes APosition {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
 .box-item {
   width: 25%;
   display: flex;
@@ -97,10 +118,12 @@ body {
     height: 80vh;
     padding-top: 90px;
   }
+
   .box-item {
     width: 50%;
     margin-bottom: 90px;
   }
+
   .home {
     background-size: auto;
   }

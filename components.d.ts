@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
+    ElImage: typeof import('element-plus/es')['ElImage']
     ElInput: typeof import('element-plus/es')['ElInput']
     HomeItem: typeof import('./src/components/HomeItem.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']

@@ -40,6 +40,7 @@
     </div>
 </template>
 <script setup lang='ts'>
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue';
 import { sendAuthCode, isAccountOnly, isEmailOnly, postRegisterApi } from '@/api/TreeHole/user'
 let second = ref(60);// 倒计时
@@ -191,8 +192,13 @@ const register = async () => {
             // 注册失败
             alert(res.errmsg)
         } else {
-            alert('注册成功')
-            emits('register-success')
+            ElMessage({
+                message: '注册成功',
+                type: 'success',
+            })
+            setTimeout(() => {
+                emits('register-success')
+            }, 800);
         }
     }
 }

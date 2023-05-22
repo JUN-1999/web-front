@@ -1,15 +1,17 @@
 <template>
     <div class="wjc-upload" ref="wjcUpload">
         <div class="input-label" v-for="item in imgList" :key="item.name">
-            <ViewImg  :src="item.url" :showDelete="true" @imgDelete="imgDelete" />
+            <ViewImg :loading="loading" :src="item.url" :showDelete="true" @imgDelete="imgDelete" />
         </div>
         <label for="uploadImg" class="input-label">
             <i class="iconfont icon-tianjia"></i>
         </label>
-        <input :accept="accept" ref="inputFile" @change="inputChange" type="file" name="" id="uploadImg" style="display: none;">
+        <input :accept="accept" ref="inputFile" @change="inputChange" type="file" name="" id="uploadImg"
+            style="display: none;">
     </div>
 </template>
 <script setup lang='ts'>
+import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue';
 import { uploadFile } from '@/api/common/file';
 import ViewImg from './ViewImg.vue';
@@ -33,6 +35,8 @@ const props = withDefaults(
         accept: 'image/*'
     }
 )
+
+let loading=ref(false);
 const emits = defineEmits(['uploadSuccess'])
 watch(
     () => props.pics,
@@ -48,11 +52,21 @@ watch(
 
 // 上传功能
 const inputFile = ref<HTMLInputElement | null>(null)
-const inputChange = async (e) => {
+const inputChange = async () => {
+    loading.value=true;
+    ElMessage({
+      message: '图片开始上传',
+      type: 'success',
+    })
     const file = (inputFile.value?.files && inputFile.value.files[0]) as Blob;
     const formData = new FormData();
     formData.append('file', file)
     let res = await uploadFile(formData)
+    loading.value=false;
+    ElMessage({
+      message: '图片上传成功',
+      type: 'success',
+    })
     if (res.errno === 0) {
         imgList.value.push({
             name: res.data.name,

@@ -68,27 +68,9 @@ const loginSuccess = function () {
     is_login_success.value = true;
     router.push('/Treehole')
 }
-import { Application } from '@splinetool/runtime';
-const initSpline = () => {
-    return new Promise((resolve, reject) => {
-        const canvas = document.getElementById('canvas3d') as HTMLCanvasElement;
-        const app = new Application(canvas);
-        app.load('spline/scene.splinecode').then(() => {
-            loadding_show.value = false;
-            canvas.style.opacity = '1';
-            resolve('渲染完成');
-        }).catch((error) => {
-            reject(error);
-        });
-    });
-};
+
 onMounted(() => {
     loadding_show.value = true;
-    // initSpline().then(res => {
-    //     console.log(res);
-    // });
-    console.log('123');
-    
 })
 </script>
 <style lang='scss' scoped>

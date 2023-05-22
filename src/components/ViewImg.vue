@@ -1,6 +1,6 @@
 <template>
-    <div @click.stop="changeIMG(true)" @mouseenter="imgEnter" @mouseleave="imgLeave" class="view-img">
-        <img id="img" :src="src">
+    <div @mouseenter="imgEnter" @mouseleave="imgLeave" class="view-img">
+        <img id="img" :src="src" />
         <div class="tip" v-show="show_tip">
             <i @click="changeIMG(true)" class="iconfont icon-fangda"></i>
             <i v-if="showDelete" @click="imgDelete(src)" class="iconfont icon-shanchu"></i>
@@ -14,7 +14,10 @@
     </div>
 </template>
 <script setup lang='ts'>
+import 'viewerjs/dist/viewer.css'
+import { api as viewerApi } from "v-viewer"
 import { ref } from 'vue';
+
 const props = defineProps({
     src: {
         type: String,
@@ -23,6 +26,10 @@ const props = defineProps({
     showDelete: {
         type: Boolean,
         default: () => false
+    },
+    loading: {
+        type: Boolean,
+        default: false
     }
 });
 const emits = defineEmits(['imgDelete'])
@@ -30,7 +37,10 @@ let show = ref(false);
 let show_tip = ref(false);
 
 const changeIMG = (flag: boolean) => {
-    show.value = flag;
+    // show.value = flag;.
+    const $viewer = viewerApi({
+        images: [props.src]
+    })
 }
 const imgEnter = () => { show_tip.value = true }
 const imgLeave = () => { show_tip.value = false }
