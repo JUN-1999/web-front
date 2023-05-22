@@ -27,6 +27,7 @@
     </div>
 </template>
 <script setup lang='ts'>
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { updateArticle } from '@/api/TreeHole/article'
@@ -59,7 +60,13 @@ const goBack = () => { router.go(-1) }
 // 发布、修改文章
 const postUpdateArticle = async () => {
     const res = await updateArticle(form.value, 0);
-    console.log(res);
+    ElMessage({
+        message: res.data,
+        type: 'success',
+    })
+    setTimeout(() => {
+        router.go(-1)
+    }, 1000);
 }
 
 </script>
@@ -75,6 +82,10 @@ const postUpdateArticle = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+:deep(.el-divider--horizontal){
+    width: 90%;
+    margin: 30px auto;
 }
 
 .edit-article {

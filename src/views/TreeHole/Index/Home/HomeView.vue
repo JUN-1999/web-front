@@ -15,7 +15,7 @@
         <section class="shell">
             <table>
                 <thead>
-                    <tr>
+                    <tr style="position: relative;z-index: 20;">
                         <th>用户</th>
                         <th>信息</th>
                         <th>日期</th>
@@ -36,7 +36,7 @@
                                 <!-- <ViewImg v-for="(pic, index) in item.PICS" :key="index" class="brief-img" :src="pic.url">
                                 </ViewImg> -->
                                 <el-image lazy v-for="(pic, index) in item.PICS" class="brief-img" :key="index"
-                                    :src="pic.url" :preview-src-list="[pic.url]" :zoom-rate="1" fit="cover" />
+                                    :src="pic.url" :preview-src-list="[pic.url]" :zoom-rate="1.1" fit="cover" />
                             </div>
                         </td>
                         <td>{{ item.UPDATE_TIME || item.ADD_TIME }}</td>
@@ -62,11 +62,11 @@ let page = ref(1); // 页码
 let pageSize = ref(5); // 页数
 let article_list = ref<IArticleItem[]>([]);//文章列表
 
-// 新增文章
+// 前往新增文章
 const ArticleEdit = () => [
     router.push('/TreeHole/TreeHoleIndex/ArticleEdit/0')
 ]
-// 查看文章详情
+// 前往查看文章详情
 const articleDetail = async (data: IArticleItem) => {
     router.push(`/TreeHole/TreeHoleIndex/ArticleDetail/${data.ARTICLE_UUID}`)
 }
