@@ -12,7 +12,7 @@
                 <img src="@/assets/imgs/TreeHole/find.png" alt="">
             </div>
         </section>
-        <section class="shell">
+        <section class="shell" @scroll="handleScroll">
             <table>
                 <thead>
                     <tr style="position: relative;z-index: 20;">
@@ -24,8 +24,9 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in article_list" :key="item.ARTICLE_UUID">
-                        <td class="user-info"> <img class="avatar" :src="item.AVATAR" alt="" /><span>{{ item.ACCOUNT
-                        }}</span>
+                        <td class="user-info">
+                            <img class="avatar" :src="item.AVATAR" alt="" />
+                            <span>{{ item.ACCOUNT }} </span>
                         </td>
                         <td class="brief">
                             <div class="brief-title">
@@ -33,10 +34,18 @@
                             </div>
                             <div class="brief-text" v-html="item.CONTENT"></div>
                             <div class="brief-imgs">
-                                <!-- <ViewImg v-for="(pic, index) in item.PICS" :key="index" class="brief-img" :src="pic.url">
-                                </ViewImg> -->
-                                <el-image lazy v-for="(pic, index) in item.PICS" class="brief-img" :key="index"
-                                    :src="pic.url" :preview-src-list="[pic.url]" :zoom-rate="1.1" fit="cover" />
+                                <template v-for="(pic, index) in item.PICS">
+                                    <template v-if="pic.type == 'img'">
+                                        <el-image lazy class="brief-img" :key="pic.url" :src="pic.url"
+                                            :preview-src-list="[pic.url]" :zoom-rate="1.1" fit="cover" />
+                                    </template>
+                                    <template v-if="pic.type == 'video'">
+                                        <div class="brief-img" :key="pic.url">
+                                            <ViewVideo :src="pic.url"></ViewVideo>
+                                        </div>
+                                    </template>
+                                </template>
+
                             </div>
                         </td>
                         <td>{{ item.UPDATE_TIME || item.ADD_TIME }}</td>
@@ -47,20 +56,33 @@
                 </tbody>
             </table>
         </section>
+        <div class="toTop" @click="toTop" :style="{
+            opacity: page > 1 ? 1 : 0
+        }">
+            <img src="@/assets/svg/TreeHole/ToTop.svg" alt="">
+        </div>
     </div>
 </template>
 <script setup lang='ts'>
+import { ElMessage } from 'element-plus'
 import { articleList } from '@/api/TreeHole/article'
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue';
 import ViewImg from '@/components/ViewImg.vue';
+import ViewVideo from '@/components/ViewVideo.vue';
 // 文章的每个类型
 import type { IArticleItem } from '@/type/TreeHole/article';
 const router = useRouter();
 
 let page = ref(1); // 页码
 let pageSize = ref(5); // 页数
-let article_list = ref<IArticleItem[]>([]);//文章列表
+let article_list = ref<IArticleItem[]>([]); // 文章列表
+let timer = ref(0); // 定时器
+let last_list = ref(false); // 是否最后的数据了
+let is_top = ref(false);// 是否显示返回顶部按钮
+onMounted(async () => {
+    await getArticleList();
+})
 
 // 前往新增文章
 const ArticleEdit = () => [
@@ -72,21 +94,64 @@ const articleDetail = async (data: IArticleItem) => {
 }
 // 获得文章列表
 const getArticleList = async () => {
-    let res = await articleList({
-        page: page.value,
-        pageSize: pageSize.value
-    });
-    let data = res.data.data;
-    data = data.map((item: IArticleItem) => {
-        item.PICS = JSON.parse(item.PICS).slice(0, 3)
-        return item;
-    })
-    article_list.value = data;
+    if (last_list.value) {
+        console.log('1');
+        ElMessage({
+            message: '没有更多瓜了',
+            type: 'info',
+        })
+    } else {
+        let res = await articleList({
+            page: page.value,
+            pageSize: pageSize.value
+        });
+        if (res.data.data.length === 0) {
+            console.log('2');
+            last_list.value = true;
+            ElMessage({
+                message: '没有更多瓜了',
+                type: 'info',
+            })
+        } else {
+            let data = res.data.data;
+            data = data.map((item: IArticleItem) => {
+                item.PICS = JSON.parse(item.PICS).slice(0, 3)
+                return item;
+            })
+            article_list.value = [...article_list.value, ...data];
+        }
+    }
+    setTimeout(() => {
+        clearTimeout(timer.value)
+        timer.value = 0
+    }, 1500);
 }
 
-onMounted(async () => {
-    await getArticleList();
-})
+//  检测是否滚动到底部
+const handleScroll = (e: any) => {
+    if (timer.value == 0) {
+        timer.value = setTimeout(() => {
+            const { scrollTop, clientHeight, scrollHeight } = e.target
+            if (scrollTop + clientHeight + 20 >= scrollHeight) {
+                page.value += 1;
+                getArticleList();
+            } else {
+                clearTimeout(timer.value)
+                timer.value = 0
+            }
+        }, 0);
+    }
+}
+
+// 返回顶部
+const toTop = () => {
+    const shellDom = document.querySelector('.shell') as HTMLDivElement;
+    shellDom.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
 
 </script>
 <style lang='scss' scoped>
@@ -96,7 +161,8 @@ onMounted(async () => {
     background-color: #fff5;
     box-shadow: 0 8px 16px #0005;
     border-radius: 16px;
-    overflow: hidden;
+
+    position: relative;
 
     .header {
         width: 100%;
@@ -202,9 +268,9 @@ onMounted(async () => {
             border-radius: 10px;
             vertical-align: middle;
             margin-left: 10px;
-            padding: 15px;
             border: 1px solid rgba($color: #575353, $alpha: .5);
             margin-bottom: 20px;
+            object-fit: cover;
         }
 
         &::-webkit-scrollbar {
@@ -262,6 +328,7 @@ onMounted(async () => {
                     margin-right: 10px;
                     justify-content: center;
                     align-items: center;
+                    border-radius: 10px;
                 }
             }
         }
@@ -279,6 +346,7 @@ onMounted(async () => {
             padding: 5px 0;
             border-radius: 40px;
             text-align: center;
+            cursor: pointer;
         }
 
         tr:nth-child(4n) .button {
@@ -299,6 +367,37 @@ onMounted(async () => {
         tr:nth-child(4n+2) .button {
             background-color: #6fcaea;
             color: #04395e
+        }
+    }
+
+    .toTop {
+        position: absolute;
+        bottom: 0px;
+        right: -100px;
+        transform: translate(0%, 0%);
+        transition: opacity .3s linear;
+
+        img {
+            width: 100px;
+            cursor: pointer;
+
+            &:hover {
+                animation: toTpA 2s infinite;
+            }
+
+            @keyframes toTpA {
+                0% {
+                    transform: translateY(0px);
+                }
+
+                50% {
+                    transform: translateY(-20px);
+                }
+
+                100% {
+                    transform: translateY(0px);
+                }
+            }
         }
     }
 }

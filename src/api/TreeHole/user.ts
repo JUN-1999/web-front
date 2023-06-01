@@ -37,3 +37,25 @@ export const postLogin = (data: any) => {
         data
     })
 }
+
+// 更新用户头像
+export const postUpdateAvatarApi = (data: any) => {
+    return request('/treehole/user/updateAvatar', {
+        method: 'post',
+        data
+    })
+}
+// 获得用户关注文章的列表
+export const getUserFllowApi = () => {
+    return request('/treehole/user/getUserFllow', {
+        method: 'get',
+    })
+}
+
+// 关注文章
+export const postFllowApi = (data: any) => {
+    return request('/treehole/user/fllow', {
+        method: 'post',
+        data
+    })
+}

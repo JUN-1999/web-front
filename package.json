@@ -22,6 +22,7 @@
     "v-viewer": "^3.0.11",
     "viewer": "^0.10.11",
     "vue": "^3.2.47",
+    "vue-cropper": "^1.0.8",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

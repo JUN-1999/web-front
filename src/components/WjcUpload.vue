@@ -1,7 +1,12 @@
 <template>
     <div class="wjc-upload" ref="wjcUpload">
         <div class="input-label" v-for="item in imgList" :key="item.name">
-            <ViewImg :loading="loading" :src="item.url" :showDelete="true" @imgDelete="imgDelete" />
+            <template v-if="item.type == 'img'">
+                <ViewImg :loading="loading" :src="item.url" :showDelete="true" @imgDelete="imgDelete" />
+            </template>
+            <template v-if="item.type == 'video'">
+                <ViewVideo :src="item.url" :showDelete="true"></ViewVideo>
+            </template>
         </div>
         <label for="uploadImg" class="input-label">
             <i class="iconfont icon-tianjia"></i>
@@ -15,11 +20,10 @@ import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue';
 import { uploadFile } from '@/api/common/file';
 import ViewImg from './ViewImg.vue';
+import ViewVideo from './ViewVideo.vue';
+import type { IIMG } from '@/type/TreeHole/file';
 // 图片列表
-interface IIMG {
-    name: string,
-    url: string,
-}
+
 interface IProps {
     pics: IIMG[];
     accept?: string
@@ -36,41 +40,46 @@ const props = withDefaults(
     }
 )
 
-let loading=ref(false);
+let loading = ref(false);
 const emits = defineEmits(['uploadSuccess'])
 watch(
     () => props.pics,
     (newVal: IIMG[], oldVal: IIMG[]) => {
-        imgList.value = newVal.map(item => {
-            return {
-                name: item.name,
-                url: item.url,
-            };
-        });
+        if (newVal.length > 0) {
+            imgList.value = newVal.map(item => {
+                return {
+                    name: item.name,
+                    url: item.url,
+                    type: item.type,
+                };
+            });
+        }
     }
 );
 
 // 上传功能
 const inputFile = ref<HTMLInputElement | null>(null)
 const inputChange = async () => {
-    loading.value=true;
+    loading.value = true;
     ElMessage({
-      message: '图片开始上传',
-      type: 'success',
+        message: '图片开始上传',
+        type: 'success',
     })
     const file = (inputFile.value?.files && inputFile.value.files[0]) as Blob;
     const formData = new FormData();
     formData.append('file', file)
     let res = await uploadFile(formData)
-    loading.value=false;
-    ElMessage({
-      message: '图片上传成功',
-      type: 'success',
-    })
+    loading.value = false;
+
     if (res.errno === 0) {
+        ElMessage({
+            message: '图片上传成功',
+            type: 'success',
+        })
         imgList.value.push({
             name: res.data.name,
             url: res.data.url,
+            type: res.data.type
         })
         emits('uploadSuccess', imgList.value)
     }

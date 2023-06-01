@@ -1,5 +1,5 @@
 <template>
-    <div style="border: 1px solid #ccc">
+    <div v-if="show" style="border: 1px solid #ccc">
         <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
         <Editor style="height: 500px; overflow-y: hidden;" v-model="valueHtml" :defaultConfig="editorConfig" :mode="mode"
             @onCreated="handleCreated" @onChange="handleChange" />
@@ -21,9 +21,13 @@ const emits = defineEmits(['editorChange'])
 const editorRef = shallowRef()
 // 内容 HTML
 const valueHtml = ref('')
+let show = ref(false);
 // 初始化内容
 onMounted(() => {
     valueHtml.value = props.content;
+    nextTick(() => {
+        show.value = true
+    })
 })
 const toolbarConfig: Partial<IToolbarConfig> = {}
 toolbarConfig.excludeKeys = [

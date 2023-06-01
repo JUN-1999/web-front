@@ -22,5 +22,23 @@ export const updateArticle = (form: any, id: number = 0) => {
             id
         }
     })
-
+}
+// 获得该用户种下的瓜的列表
+export const getArticleCreateApi = () => {
+    return request('/treehole/article/articleCreate', {
+        method: 'get',
+    })
+}
+// 获得该用户关注的瓜的列表
+export const getArticleFollowApi = () => {
+    return request('/treehole/article/articleFollow', {
+        method: 'get',
+    })
+}
+// 删除某个瓜
+export const postDeleteArticleApi = (data: any) => {
+    return request('/treehole/article/updateArticleStatus', {
+        method: 'post',
+        data
+    })
 }

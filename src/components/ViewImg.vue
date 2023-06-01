@@ -102,7 +102,7 @@ const imgDelete = (src: string) => { emits('imgDelete', src) }
     border-radius: 15px;
 
     background-color: #fff;
-    z-index: 20;
+    z-index: 999;
     width: 80vw;
     height: 80vh;
     overflow: hidden;

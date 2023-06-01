@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BottomFiling: typeof import('./src/components/BottomFiling.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
@@ -25,6 +26,8 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ViewImg: typeof import('./src/components/ViewImg.vue')['default']
+    ViewVideo: typeof import('./src/components/ViewVideo.vue')['default']
+    WjcCropper: typeof import('./src/components/WjcCropper.vue')['default']
     WjcEditor: typeof import('./src/components/WjcEditor.vue')['default']
     WjcUpload: typeof import('./src/components/WjcUpload.vue')['default']
   }

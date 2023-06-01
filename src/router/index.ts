@@ -49,6 +49,16 @@ const router = createRouter({
               path: 'ArticleDetail/:id',
               name: 'ArticleDetail',
               component: () => import('@/views/TreeHole/Index/ArticleDetail/IndexView.vue')
+            },
+            {
+              path: 'TreeUser',
+              name: 'TreeUser',
+              component: () => import('@/views/TreeHole/Index/User/IndexView.vue')
+            },
+            {
+              path: 'TreeGame',
+              name: 'TreeGame',
+              component: () => import('@/views/TreeHole/Index/Game/IndexView.vue')
             }
           ]
         },
@@ -65,13 +75,15 @@ router.beforeEach((to, from) => {
   if (to.path.includes('TreeHole') && to.path != '/TreeHole/login') {
 
     let { token } = useTreeHoleUserStore();
-    const { setToken, setUserInfo } = useTreeHoleUserStore();
+    const { setToken, setUserInfo, setFollow } = useTreeHoleUserStore();
 
     if (!token) {
       token = localStorage.getItem('token') as string;
       const userInfo = JSON.parse(localStorage.getItem('userInfo') as string) as IUserInfo;
+      const follow = JSON.parse(localStorage.getItem('follow') as string) as any[];
       setToken(token)
       setUserInfo(userInfo)
+      setFollow(follow)
 
     }
     if (!token) {

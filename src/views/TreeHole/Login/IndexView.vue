@@ -2,7 +2,7 @@
     <div :class="{ login_success: is_login_success }" class="box">
         <div class="center">
             <div class="news">
-                <img src="@/assets/imgs/TreeHole/login_news.svg" alt="">
+                <img src="@/assets/svg/TreeHole/login_news.svg" alt="">
                 <!-- <canvas id="canvas3d"></canvas>
                 <img v-show="loadding_show" class="loadding" src="@/assets/imgs/TreeHole/loading.png" alt=""> -->
             </div>

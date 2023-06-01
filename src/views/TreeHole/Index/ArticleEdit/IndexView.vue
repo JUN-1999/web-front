@@ -3,7 +3,7 @@
         <div class="header">
             <div class="back" @click="goBack"><i class="iconfont icon-fanhui"></i>返回</div>
             <div class="line"></div>
-            <h1 class="title">编辑瓜</h1>
+            <h1 class="title">{{ article_uuid == 0 ? '种下瓜' : '编辑瓜' }}</h1>
         </div>
         <el-form :model="form" label-width="0px">
             <el-divider><span>标题</span></el-divider>
@@ -13,33 +13,32 @@
             <el-divider><span>正文</span></el-divider>
             <el-form-item label="">
                 <div style="width: 90%;">
-                    <WjcEditor :content="form.content" @editor-change="editorChange"></WjcEditor>
+                    <WjcEditor v-if="is_content" :content="form.content" @editor-change="editorChange"></WjcEditor>
                 </div>
             </el-form-item>
-            <el-divider><span>图片</span></el-divider>
+            <el-divider><span>图片/视频</span></el-divider>
             <el-form-item label="">
-                <WjcUpload @upload-success="uploadSuccess" :pics="form.pics"></WjcUpload>
+                <WjcUpload :accept="'video/*,image/*'" @upload-success="uploadSuccess" :pics="form.pics"></WjcUpload>
             </el-form-item>
             <el-form-item label="">
-                <el-button @click="postUpdateArticle" type="success" class="publish-btn">发布</el-button>
+                <el-button @click="postUpdateArticle" type="success" class="publish-btn">{{ article_uuid == 0 ? '发布' : '修改'
+                }}</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 <script setup lang='ts'>
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { updateArticle } from '@/api/TreeHole/article'
-
+import { ref, onMounted, nextTick } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { updateArticle, getArticleInfoApi } from '@/api/TreeHole/article';
 import WjcUpload from '@/components/WjcUpload.vue';
 import WjcEditor from '@/components/WjcEditor.vue';
-interface IIMG {
-    name: string,
-    url: string,
-}
-const router = useRouter();
+import type { IIMG } from '@/type/TreeHole/file';
 
+const article_uuid = ref();
+const router = useRouter();
+const route = useRoute();
 const form = ref<{
     title: string,
     content: string,
@@ -49,6 +48,18 @@ const form = ref<{
     content: '',
     pics: [],
 })
+let is_content = ref(false);
+
+onMounted(() => {
+    article_uuid.value = route.params.id
+    if (article_uuid.value != 0) {
+        // 说明有文章 去获取文章
+        getArticle();
+    } else {
+        is_content.value = true;
+    }
+})
+
 
 const uploadSuccess = (list: IIMG[]) => {
     form.value.pics = list;
@@ -59,7 +70,7 @@ const editorChange = (html: string) => {
 const goBack = () => { router.go(-1) }
 // 发布、修改文章
 const postUpdateArticle = async () => {
-    const res = await updateArticle(form.value, 0);
+    const res = await updateArticle(form.value, article_uuid.value * 1);
     ElMessage({
         message: res.data,
         type: 'success',
@@ -67,6 +78,22 @@ const postUpdateArticle = async () => {
     setTimeout(() => {
         router.go(-1)
     }, 1000);
+}
+// 获得文章
+const getArticle = async () => {
+    let res = await getArticleInfoApi({
+        article_uuid: article_uuid.value
+    })
+    let { TITLE, CONTENT, PICS } = res.data;
+    form.value = {
+        title: TITLE,
+        content: CONTENT,
+        pics: JSON.parse(PICS)
+    };
+    nextTick(() => {
+        is_content.value = true;
+    })
+
 }
 
 </script>
@@ -83,7 +110,8 @@ const postUpdateArticle = async () => {
     justify-content: center;
     align-items: center;
 }
-:deep(.el-divider--horizontal){
+
+:deep(.el-divider--horizontal) {
     width: 90%;
     margin: 30px auto;
 }
@@ -105,14 +133,15 @@ const postUpdateArticle = async () => {
         padding-left: 80px;
 
         .back {
-            display: flex;
-            align-items: center;
-            color: #fff;
-            font-size: 25px;
 
-            .icon-fanhui {
-                font-size: 25px;
-            }
+            font-size: 30px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .icon-fanhui {
+            font-size: 30px;
+            margin-right: 10px;
         }
 
         .line {

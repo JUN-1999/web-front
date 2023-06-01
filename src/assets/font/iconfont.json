@@ -6,6 +6,20 @@
   "description": "树洞",
   "glyphs": [
     {
+      "icon_id": "15311733",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "16365845",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
       "icon_id": "22529994",
       "name": "返回",
       "font_class": "fanhui",
@@ -48,13 +62,6 @@
       "unicode_decimal": 58951
     },
     {
-      "icon_id": "3876805",
-      "name": "搜索",
-      "font_class": "find",
-      "unicode": "e612",
-      "unicode_decimal": 58898
-    },
-    {
       "icon_id": "11372706",
       "name": "搜索",
       "font_class": "sousuo",
@@ -74,13 +81,6 @@
       "font_class": "zhuce1",
       "unicode": "e6d6",
       "unicode_decimal": 59094
-    },
-    {
-      "icon_id": "24365616",
-      "name": "沙滩_照相机",
-      "font_class": "shatan_zhaoxiangji",
-      "unicode": "e6c2",
-      "unicode_decimal": 59074
     }
   ]
 }

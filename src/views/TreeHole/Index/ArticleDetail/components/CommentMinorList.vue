@@ -1,48 +1,86 @@
 <template>
     <div>
-        <div class="comment" v-for="(item, index) in commentList" :key="index">
-            <div>头像：<img :src="item.AVATAR" alt="" /></div>
-            <div v-if="item.USERINFO">
-                @<span>{{ item.USERINFO.ACCOUNT }}</span>
+        <div class="comment-item" v-for="(item, index) in commentList" :key="index">
+            <div class="left">
+                <div class="avatar"><img :src="item.AVATAR" alt="" /></div>
             </div>
-            <div>昵称：{{ item.ACCOUNT }}</div>
-            <div>内容：{{ item.COMMENT }}</div>
-            <div>时间：{{ item.ADD_TIME }} <span class="reply" @click="reply(item)">回复</span></div>
+            <div class="right">
+                <div>
+                    <span class="name">{{ item.ACCOUNT }}</span>
+                    <template v-if="item.USERINFO">
+                        <span class="at">@{{ item.USERINFO.ACCOUNT }} ：</span>
+                    </template>
+                    <span class="comment">{{ item.COMMENT }}</span>
+                </div>
+                <div class="tool">
+                    <span class="tool-item time">{{ $common.timeFilter(item.ADD_TIME)  }}</span>
+                    <span class="tool-item reply" @click="reply(item)">回复</span>
+                </div>
+
+            </div>
         </div>
     </div>
 </template>
 <script setup lang='ts'>
-import CommentInput from './CommentInput.vue';
 import type { IComment } from '@/type/TreeHole/comment';
-import { ref } from 'vue';
-let active_comment_uuid = ref();
 const emits = defineEmits(['minorReply'])
 const props = defineProps<{
     commentList: IComment[]
 }>()
 // 回复按钮
 const reply = (data: IComment) => {
-    emits('minorReply', data.FATHER_COMMENT_UUID, data.USER_UUID)
+    emits('minorReply', data.FATHER_COMMENT_UUID, data.USER_UUID, data.ACCOUNT)
 }
-
-const successComment = (index: number, item: IComment) => {
-    console.log(index, item);
-}
-
 
 </script>
 <style lang='scss' scoped>
-.comment {
-    margin-bottom: 5px;
+.comment-item {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
 
-    img {
-        width: 50px;
-        height: 50px;
+    .left {
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
     }
 
-    .reply {
-        font-size: 16px;
-        color: #f2f2f2;
+    .right {
+        padding-top: 10px;
+        flex: 1;
+
+        .name {
+            color: #585454;
+            font-size: 20px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+        }
+
+        .tool {
+            margin-top: 10px;
+            color: #585858;
+            font-size: 20px;
+
+            .tool-item {
+                margin-right: 15px;
+            }
+        }
+
+        .minor-reply {
+            margin-top: 20px;
+            width: 100%;
+        }
     }
 }
 </style>
