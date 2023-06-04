@@ -7,15 +7,28 @@
             <div class="right">
                 <div class="name">{{ item.ACCOUNT }}</div>
                 <div class="content">{{ item.COMMENT }}</div>
+                <div class="pics">
+                    <template v-for="(pic, index) in item.PICS">
+                        <template v-if="pic.type == 'img'">
+                            <el-image lazy class="brief-img" :key="pic.url" :src="pic.url" :preview-src-list="[pic.url]"
+                                :zoom-rate="1.1" fit="cover" />
+                        </template>
+                        <template v-if="pic.type == 'video'">
+                            <div class="brief-img" :key="pic.url">
+                                <ViewVideo :src="pic.url"></ViewVideo>
+                            </div>
+                        </template>
+                    </template>
+                </div>
                 <div class="tool">
-                    <span class="tool-item time">{{ $common.timeFilter(item.ADD_TIME)  }}</span>
+                    <span class="tool-item time">{{ $common.timeFilter(item.ADD_TIME) }}</span>
                     <span class="tool-item reply" @click="reply(item)">回复</span>
                 </div>
                 <div v-if="item.childComment" style="margin-left: 0px; padding-top: 10px;">
                     <CommentMinorList @minorReply="minorReply" :commentList="item.childComment"></CommentMinorList>
                 </div>
                 <CommentInput class="minor-reply" @successComment="(data) => { successComment(index, data) }"
-                    v-show="active_comment_uuid === item.COMMENT_UUID" :articleuuid="item.ARTICLE_UUID"
+                    v-if="active_comment_uuid === item.COMMENT_UUID" :articleuuid="item.ARTICLE_UUID"
                     :toUserUUID="toUserUUID" :toUserName="toUserName" :fatherCommentUUID="fatherCommentUUID">
                 </CommentInput>
             </div>
@@ -27,6 +40,7 @@ import CommentInput from './CommentInput.vue';
 import CommentMinorList from './CommentMinorList.vue';
 import type { ICommentWithChild, IChildComment } from '@/type/TreeHole/comment';
 import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
+import ViewVideo from '@/components/ViewVideo.vue';
 const treeHoleUsers = useTreeHoleUserStore(); // 树洞的用户信息
 import { ref } from 'vue';
 const props = defineProps<{
@@ -65,6 +79,7 @@ const successComment = (index: number, data: ICommentWithChild) => {
     const newComment: IChildComment = {
         AVATAR: treeHoleUsers.userInfo?.AVATAR as string,
         COMMENT: data.COMMENT,
+        PICS: data.PICS,
         ADD_TIME: '刚刚',
         ACCOUNT: treeHoleUsers.userInfo?.ACCOUNT as string,
         COMMENT_UUID: Date.now() + '', // 临时评论id
@@ -72,10 +87,7 @@ const successComment = (index: number, data: ICommentWithChild) => {
         USER_UUID: treeHoleUsers.userInfo?.USER_UUID as string,
         TO_USER_UUID: data.TO_USER_UUID as string,
         FATHER_COMMENT_UUID: data.FATHER_COMMENT_UUID as string,
-        USERINFO: {
-            ACCOUNT: data.USERINFO?.ACCOUNT as string,
-            AVATAR: data.USERINFO?.AVATAR as string,
-        }
+        USERINFO: undefined
     };
     emits('minorSuccessComment', index, newComment)
 }
@@ -118,6 +130,14 @@ const successComment = (index: number, data: ICommentWithChild) => {
                 margin-bottom: 10px;
             }
 
+            .pics {
+                .brief-img {
+                    width: 80px;
+                    height: 80px;
+                    margin-right: 10px;
+                }
+            }
+
             .tool {
                 margin-top: 10px;
                 color: #585858;
@@ -125,6 +145,10 @@ const successComment = (index: number, data: ICommentWithChild) => {
 
                 .tool-item {
                     margin-right: 15px;
+                }
+
+                .reply {
+                    cursor: pointer;
                 }
             }
 

@@ -44,5 +44,11 @@
     "unplugin-vue-components": "^0.24.1",
     "vite": "^4.1.4",
     "vue-tsc": "^1.2.0"
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-debugger": "off",
+      "no-console": "off"
+    }
   }
 }

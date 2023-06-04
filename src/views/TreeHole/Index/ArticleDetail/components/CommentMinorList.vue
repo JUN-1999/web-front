@@ -12,8 +12,21 @@
                     </template>
                     <span class="comment">{{ item.COMMENT }}</span>
                 </div>
+                <div class="pics">
+                    <template v-for="(pic, index) in item.PICS">
+                        <template v-if="pic.type == 'img'">
+                            <el-image lazy class="brief-img" :key="pic.url" :src="pic.url" :preview-src-list="[pic.url]"
+                                :zoom-rate="1.1" fit="cover" />
+                        </template>
+                        <template v-if="pic.type == 'video'">
+                            <div class="brief-img" :key="pic.url">
+                                <ViewVideo :src="pic.url"></ViewVideo>
+                            </div>
+                        </template>
+                    </template>
+                </div>
                 <div class="tool">
-                    <span class="tool-item time">{{ $common.timeFilter(item.ADD_TIME)  }}</span>
+                    <span class="tool-item time">{{ $common.timeFilter(item.ADD_TIME) }}</span>
                     <span class="tool-item reply" @click="reply(item)">回复</span>
                 </div>
 
@@ -23,6 +36,7 @@
 </template>
 <script setup lang='ts'>
 import type { IComment } from '@/type/TreeHole/comment';
+import ViewVideo from '@/components/ViewVideo.vue';
 const emits = defineEmits(['minorReply'])
 const props = defineProps<{
     commentList: IComment[]
@@ -53,7 +67,6 @@ const reply = (data: IComment) => {
                 object-fit: cover;
             }
         }
-
     }
 
     .right {
@@ -81,6 +94,14 @@ const reply = (data: IComment) => {
             margin-top: 20px;
             width: 100%;
         }
+    }
+}
+
+.pics {
+    .brief-img {
+        width: 80px;
+        height: 80px;
+        margin-right: 10px;
     }
 }
 </style>

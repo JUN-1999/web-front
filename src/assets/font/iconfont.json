@@ -6,6 +6,20 @@
   "description": "树洞",
   "glyphs": [
     {
+      "icon_id": "2076242",
+      "name": " 图片",
+      "font_class": "tupian",
+      "unicode": "e889",
+      "unicode_decimal": 59529
+    },
+    {
+      "icon_id": "14493782",
+      "name": "视频",
+      "font_class": "shipin",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
       "icon_id": "15311733",
       "name": "播放",
       "font_class": "bofang",

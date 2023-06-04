@@ -1,3 +1,4 @@
+import type { IIMG } from '@/type/TreeHole/file'
 type UUID = string;
 
 interface IUSERINFO {
@@ -11,6 +12,7 @@ export interface IComment {
     ARTICLE_UUID: UUID;
     AVATAR: string;
     COMMENT: string;
+    PICS: IIMG[];
     COMMENT_UUID: UUID;
     FATHER_COMMENT_UUID?: UUID;
     TO_USER_UUID?: UUID;

@@ -3,7 +3,8 @@
         <div class="back" @click="goBack"><i class="iconfont icon-fanhui"></i>返回</div>
         <ArticleInfo :articleInfo="articleInfo" />
         <div class="comment-box">
-            <CommentInput @successComment="successComment" :articleuuid="article_uuid"></CommentInput>
+            <CommentInput @successComment="successComment" :articleuuid="article_uuid">
+            </CommentInput>
         </div>
         <CommontList :commentList="commentList" :articleuuid="article_uuid" @minorSuccessComment="minorSuccessComment">
         </CommontList>
@@ -20,8 +21,10 @@ import CommentInput from './components/CommentInput.vue';
 import ArticleInfo from './components/ArticleInfo.vue';
 import CommontList from './components/CommontList.vue';
 
+
 const router = useRouter(); // v-router 实例
 const route = useRoute(); // 当前路由信息
+
 // 评论信息
 let article_uuid = ref<string>('');// 标识是哪个文章的评论
 let commentList = ref<ICommentWithChild[]>([]);//评论列表
@@ -46,7 +49,17 @@ const getCommentsList = async () => {
     const res = await getCommentListAPi({
         article_uuid: article_uuid.value
     })
-    commentList.value = res.data
+    res.data = res.data.map((item: any) => {
+        item.PICS = JSON.parse(item.PICS)
+        if (item.childComment) {
+            item.childComment.map((childItem: any) => {
+                childItem.PICS = JSON.parse(childItem.PICS)
+                return childItem
+            })
+        }
+        return item
+    })
+    commentList.value = res.data;
 }
 // 获得内容详情
 const getArticleInfo = async () => {
