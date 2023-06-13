@@ -6,7 +6,7 @@
             <CommentInput @successComment="successComment" :articleuuid="article_uuid">
             </CommentInput>
         </div>
-        <CommontList :commentList="commentList" :articleuuid="article_uuid" @minorSuccessComment="minorSuccessComment">
+        <CommontList :commentList="commentList" :articleInfo="articleInfo"  :articleuuid="article_uuid" @minorSuccessComment="minorSuccessComment">
         </CommontList>
     </div>
 </template>

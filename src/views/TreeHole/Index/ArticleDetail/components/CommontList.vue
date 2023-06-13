@@ -3,9 +3,11 @@
         <div class="comment-item" v-for="(item, index) in commentList" :key="index">
             <div class="left">
                 <div class="avatar"><img :src="item.AVATAR" alt="" /></div>
+                <div class="tag" v-if="articleInfo.ACCOUNT === item.ACCOUNT">瓜主</div>
             </div>
             <div class="right">
-                <div class="name">{{ item.ACCOUNT }}</div>
+                <div class="name">{{ item.ACCOUNT }} <el-button v-if="articleInfo.ACCOUNT === item.ACCOUNT"
+                        @click="add(item)" :icon="Calendar">加入时间线</el-button> </div>
                 <div class="content">{{ item.COMMENT }}</div>
                 <div class="pics">
                     <template v-for="(pic, index) in item.PICS">
@@ -36,16 +38,24 @@
     </div>
 </template>
 <script setup lang='ts'>
+import { ElMessage } from 'element-plus';
+import { Calendar } from '@element-plus/icons-vue';
+import type { IArticleItem } from '@/type/TreeHole/article';
+import type { ICommentWithChild, IChildComment } from '@/type/TreeHole/comment';
+import {
+    addTimeLine,
+    deleteTimeLine
+} from '@/api/TreeHole/timerLine';
+import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import CommentInput from './CommentInput.vue';
 import CommentMinorList from './CommentMinorList.vue';
-import type { ICommentWithChild, IChildComment } from '@/type/TreeHole/comment';
-import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import ViewVideo from '@/components/ViewVideo.vue';
 const treeHoleUsers = useTreeHoleUserStore(); // 树洞的用户信息
 import { ref } from 'vue';
 const props = defineProps<{
     commentList: ICommentWithChild[]
     articleuuid: string
+    articleInfo: IArticleItem
 }>()
 
 
@@ -91,6 +101,20 @@ const successComment = (index: number, data: ICommentWithChild) => {
     };
     emits('minorSuccessComment', index, newComment)
 }
+// 加入时间线
+const add = async (row: ICommentWithChild) => {
+    console.log('文章id', row.ARTICLE_UUID);
+    console.log('内容id', row.COMMENT_UUID);
+    let res = await addTimeLine({
+        ARTICLE_UUID: row.ARTICLE_UUID,
+        COMMENT_UUID: row.COMMENT_UUID,
+        TIME: row.ADD_TIME
+    })
+    ElMessage({
+        message: '加入时间线成功',
+        type: 'success',
+    })
+}
 
 </script>
 <style lang='scss' scoped>
@@ -104,12 +128,30 @@ const successComment = (index: number, data: ICommentWithChild) => {
         display: flex;
 
         .left {
+            margin-right: 20px;
+
+            .tag {
+                display: inline-block;
+                padding: 3px 5px;
+                background-color: green;
+                color: #fff;
+                border-radius: 5px;
+                font-size: 14px;
+                text-align: center;
+                margin: 0 auto;
+                position: relative;
+                left: 50%;
+                transform: translate(-50%, 0);
+                margin-top: 10px;
+            }
+
             .avatar {
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
                 overflow: hidden;
-                margin-right: 20px;
+                background-color: #fff;
+
 
                 img {
                     width: 100%;
@@ -131,6 +173,8 @@ const successComment = (index: number, data: ICommentWithChild) => {
             }
 
             .pics {
+                margin-top: 10px;
+
                 .brief-img {
                     width: 80px;
                     height: 80px;

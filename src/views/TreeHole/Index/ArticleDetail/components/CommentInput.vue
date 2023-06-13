@@ -3,7 +3,8 @@
         <div class="comment-input">
             <div class="avatar"><img :src="treeHoleUsers.userInfo?.AVATAR" alt=""></div>
             <input :placeholder="`${props.toUserUUID ? '@' + props.toUserName + '  ' : ''}` + commentPlaceholder"
-                class="comment_input" v-model="comment_text" ref="content" />
+                class="comment_input" v-model="comment_text" ref="content" @keyup.enter="checkComment">
+
             <div class="comment_input_right" :class="canSend ? 'can-send' : 'not-can-send'" @click="checkComment">
                 评论
             </div>

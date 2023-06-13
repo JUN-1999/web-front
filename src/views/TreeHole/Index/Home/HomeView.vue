@@ -160,6 +160,7 @@ const toTop = () => {
     background-color: #fff5;
     box-shadow: 0 8px 16px #0005;
     border-radius: 16px;
+    overflow: hidden;
 
     position: relative;
 

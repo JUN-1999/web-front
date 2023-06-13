@@ -1,28 +1,34 @@
 <template>
     <div class="edit-article">
         <div class="header">
-            <div class="back" @click="goBack"><i class="iconfont icon-fanhui"></i>返回</div>
-            <div class="line"></div>
-            <h1 class="title">{{ article_uuid == 0 ? '种下瓜' : '编辑瓜' }}</h1>
+            <div class="header-left">
+                <div class="back" @click="goBack"><i class="iconfont icon-fanhui"></i>返回</div>
+                <div class="line"></div>
+                <div class="title">{{ article_uuid == 0 ? '种下瓜' : '编辑瓜' }}</div>
+            </div>
+
+            <el-button @click="postUpdateArticle" type="success" class="publish-btn">{{ article_uuid == 0 ? '发布' : '修改'
+            }}</el-button>
         </div>
         <el-form :model="form" label-width="0px">
-            <el-divider><span>标题</span></el-divider>
             <el-form-item label="">
+                <span class="title-text">标题</span>
                 <el-input size="large" maxlength="30" show-word-limit clearable style="width: 60%;" v-model="form.title" />
             </el-form-item>
-            <el-divider><span>正文</span></el-divider>
             <el-form-item label="">
                 <div style="width: 90%;">
                     <WjcEditor v-if="is_content" :content="form.content" @editor-change="editorChange"></WjcEditor>
                 </div>
             </el-form-item>
-            <el-divider><span>图片/视频</span></el-divider>
             <el-form-item label="">
-                <WjcUpload :accept="'video/*,image/*'" @upload-success="uploadSuccess" :pics="form.pics"></WjcUpload>
+                <div class="media">
+                    <span class="text">图片/视频</span>
+                    <WjcUpload label-style-width="80px" label-style-height="80px" :accept="'video/*,image/*'"
+                        @upload-success="uploadSuccess" :pics="form.pics"></WjcUpload>
+                </div>
             </el-form-item>
             <el-form-item label="">
-                <el-button @click="postUpdateArticle" type="success" class="publish-btn">{{ article_uuid == 0 ? '发布' : '修改'
-                }}</el-button>
+
             </el-form-item>
         </el-form>
     </div>
@@ -70,7 +76,7 @@ const editorChange = (html: string) => {
 const goBack = () => { router.go(-1) }
 // 发布、修改文章
 const postUpdateArticle = async () => {
-    const res = await updateArticle(form.value, article_uuid.value * 1);
+    const res = await updateArticle(form.value, article_uuid.value);
     ElMessage({
         message: res.data,
         type: 'success',
@@ -127,34 +133,43 @@ const getArticle = async () => {
 
     .header {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        height: 80px;
         box-sizing: border-box;
-        padding-left: 80px;
+        padding: 0 80px;
+        margin-top: 20px;
+        margin-bottom: 20px;
 
-        .back {
-
+        .header-left {
+            display: flex;
+            align-items: center;
             font-size: 30px;
-            color: #fff;
-            cursor: pointer;
+            height: 60px;
+
+            .back {
+                color: #fff;
+                cursor: pointer;
+            }
+
+            .icon-fanhui {
+                margin-right: 10px;
+                font-size: 30px;
+            }
+
+            .line {
+                width: 2px;
+                height: 50%;
+                background-color: #dadada;
+                margin: 0 20px;
+            }
+
+            .title {
+                font-weight: 600;
+                color: #36ae39;
+                text-shadow: #f2f2f2 1px 0 0, #f2f2f2 0 1px 0, #f2f2f2 -1px 0 0, #f2f2f2 0 -1px 0;
+            }
         }
 
-        .icon-fanhui {
-            font-size: 30px;
-            margin-right: 10px;
-        }
-
-        .line {
-            width: 2px;
-            height: 50%;
-            background-color: #dadada;
-            margin: 0 20px;
-        }
-
-        .title {
-            color: #36ae39;
-            text-shadow: #f2f2f2 1px 0 0, #f2f2f2 0 1px 0, #f2f2f2 -1px 0 0, #f2f2f2 0 -1px 0;
-        }
     }
 
     .publish-btn {
@@ -168,4 +183,23 @@ const getArticle = async () => {
         box-shadow: 0 0 10px 1px #fff;
     }
 }
+
+.media {
+    width: 100%;
+    padding: 0 80px;
+
+    .text {
+        font-size: 20px;
+        color: white;
+        display: block;
+        margin-bottom: 10px;
+    }
+}
+
+.title-text {
+    font-size: 20px;
+    color: white;
+    margin-right: 10px;
+}
+
 </style>

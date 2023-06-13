@@ -1,8 +1,8 @@
 <template>
     <div class="acticle-info">
-
         <div class="left">
             <div><img :src="articleInfo.AVATAR" /></div>
+            <h5 style="width: 50px;text-align: center;word-wrap: break-word;">{{ articleInfo.ACCOUNT }}</h5>
         </div>
         <div class="right">
             <div class="tool">
@@ -10,8 +10,9 @@
                     src="@/assets/svg/TreeHole/follow.svg" alt="">
                 <img title="未关注" @click="follow" v-else class="tool-img" src="@/assets/svg/TreeHole/not_follow.svg" alt="">
                 <img title="聊天室" class="tool-img" src="@/assets/imgs/TreeHole/chat_room.png" alt="聊天室">
+                <img title="时间线" @click="cahngeTimeLine(true)" class="tool-img" src="@/assets/svg/TreeHole/timeline.svg" alt="">
             </div>
-            <div class="name"> {{ articleInfo.ACCOUNT }}</div>
+            <div class="name"> {{ articleInfo.TITLE }}</div>
             <div class="time"> {{ articleInfo.UPDATE_TIME || articleInfo.ADD_TIME }}</div>
             <div class="content">
                 <p v-html="articleInfo.CONTENT"> </p>
@@ -28,19 +29,18 @@
                         </div>
                     </template>
                 </div>
-
-                <!-- <el-image v-for="item, index in articleInfo.PICS" :key="index" class="img-item"
-                    :preview-src-list="[item.url]" :zoom-rate="1.1" fit="fill" :src="item.url" />
-                <img v-for="item, index in articleInfo.PICS" :key="index" :src="item.url"> -->
             </div>
         </div>
     </div>
+    <!--  -->
+    <TimeLine ref="timeLine" @close="cahngeTimeLine" :articleInfo="articleInfo" v-if="showTimeLine"></TimeLine>
 </template>
 <script setup lang='ts'>
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import type { IArticleItem } from '@/type/TreeHole/article';
 import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import { postFllowApi } from '@/api/TreeHole/user';
+import TimeLine from '@/views/TreeHole/components/TimeLine.vue';
 import ViewVideo from '@/components/ViewVideo.vue';
 const props = defineProps<{
     articleInfo: IArticleItem
@@ -63,6 +63,14 @@ const follow = async () => {
     })
     await treeHoleUserStore.getFollow();
 }
+let showTimeLine = ref(false);
+// 显示时间轴
+const cahngeTimeLine = (flag: boolean = true) => {
+    console.log('cahngeTimeLine',flag);
+    
+    showTimeLine.value = flag;
+}
+
 </script>
 <style lang='scss' scoped>
 .acticle-info {

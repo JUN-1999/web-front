@@ -1,13 +1,12 @@
 <template>
     <div class="view-video" @mouseenter="videoEnter" @mouseleave="videoLeave">
         <div class="video-box">
-            <i class="iconfont icon-bofang"></i>
             <video id="video">
                 <source :src="src">
             </video>
         </div>
         <div class="tip" v-show="show_tip">
-            <i @click="changeVideo(true)" class="iconfont icon-fangda"></i>
+            <i @click="changeVideo(true)" class="iconfont icon-bofang"></i>
             <i v-if="showDelete" @click="videoDelete(src)" class="iconfont icon-shanchu"></i>
         </div>
         <div class="mask_layer" v-show="show">
@@ -66,7 +65,7 @@ const videoDelete = (src: string) => { emits('videoDelete', src) }
             left: 50%;
             transform: translate(-50%, -50%);
             color: #fff;
-            font-size: 80px;
+            font-size: 60px;
         }
     }
 
