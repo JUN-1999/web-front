@@ -1,50 +1,56 @@
 <template>
-    <div class="time-line">
-        <div class="main">
-            <div class="name"> {{ articleInfo.TITLE }}</div>
-            <div class="content">
-                <p v-html="articleInfo.CONTENT"> </p>
-            </div>
-            <div class="imgs">
-                <div v-for="item, index in articleInfo.PICS" :key="index" class="img-box">
-                    <template v-if="item.type == 'img'">
-                        <el-image class="img-item" fit="cover" :src="item.url" :preview-src-list="[item.url]"
-                            :zoom-rate="1.1"></el-image>
-                    </template>
-                    <template v-if="item.type == 'video'">
-                        <div class="img-item" :key="item.url">
-                            <ViewVideo :src="item.url"></ViewVideo>
-                        </div>
-                    </template>
+    <el-drawer style="background-color: olivedrab;" v-model="show" append-to-body size="40%" title="时间线" direction="ltr"
+        :before-close="closeTimeLine">
+        <template #header>
+            <span style="color: #fff;">时间线</span>
+        </template>
+        <div class="time-line">
+            <div class="main">
+                <div class="name"> {{ articleInfo.TITLE }}</div>
+                <div class="content">
+                    <p v-html="articleInfo.CONTENT"> </p>
                 </div>
-            </div>
-
-        </div>
-        <el-timeline>
-            <el-timeline-item v-for="item in list" :key="item.TIMER_SHAFT_UUID" :timestamp="item.TIME" placement="top">
-                <el-card>
-                    <div v-html="item.COMMENT"></div>
-                    <div class="imgs">
-                        <div v-for="picitem, picindex in item.PICS" :key="picindex" class="img-box">
-                            <template v-if="picitem.type == 'img'">
-                                <el-image class="img-item" fit="cover" :src="picitem.url" :preview-src-list="[picitem.url]"
-                                    :zoom-rate="1.1"></el-image>
-                            </template>
-                            <template v-if="picitem.type == 'video'">
-                                <div class="img-item" :key="picitem.url">
-                                    <ViewVideo :src="picitem.url"></ViewVideo>
-                                </div>
-                            </template>
-                        </div>
+                <div class="imgs">
+                    <div v-for="item, index in articleInfo.PICS" :key="index" class="img-box">
+                        <template v-if="item.type == 'img'">
+                            <el-image class="img-item" fit="cover" :src="item.url" :preview-src-list="[item.url]"
+                                :zoom-rate="1.1"></el-image>
+                        </template>
+                        <template v-if="item.type == 'video'">
+                            <div class="img-item" :key="item.url">
+                                <ViewVideo :src="item.url"></ViewVideo>
+                            </div>
+                        </template>
                     </div>
-                </el-card>
-            </el-timeline-item>
+                </div>
 
-        </el-timeline>
-        <div class="close" @click="closeTimeLine">
-            <i class="iconfont icon-guanbi1"></i>
+            </div>
+            <el-timeline>
+                <el-timeline-item v-for="item in list" :key="item.TIMER_SHAFT_UUID" :timestamp="item.TIME" placement="top">
+                    <el-card>
+                        <div v-html="item.COMMENT"></div>
+                        <div class="imgs">
+                            <div v-for="picitem, picindex in item.PICS" :key="picindex" class="img-box">
+                                <template v-if="picitem.type == 'img'">
+                                    <el-image class="img-item" fit="cover" :src="picitem.url"
+                                        :preview-src-list="[picitem.url]" :zoom-rate="1.1"></el-image>
+                                </template>
+                                <template v-if="picitem.type == 'video'">
+                                    <div class="img-item" :key="picitem.url">
+                                        <ViewVideo :src="picitem.url"></ViewVideo>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-timeline-item>
+
+            </el-timeline>
+            <div class="close" @click="closeTimeLine">
+                <i class="iconfont icon-guanbi1"></i>
+            </div>
         </div>
-    </div>
+    </el-drawer>
 </template>
 <script setup lang='ts'>
 import { onMounted, ref } from 'vue';
@@ -56,6 +62,7 @@ const props = defineProps<{
 }>()
 const emits = defineEmits(['close'])
 let list = ref();
+const show = true;
 
 onMounted(async () => {
     let { data } = await getTimeLine({
@@ -75,17 +82,11 @@ const closeTimeLine = () => {
 </script>
 <style lang='scss' scoped>
 .time-line {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 20;
-    width: 600px;
-    height: calc(90vh - 50px);
+    width: 100%;
+    height: 100%;
     background-color: #fff;
-    border-radius: 15px;
     overflow-y: auto;
-    padding: 20px;
+    padding: 30px;
     background-color: rgba($color: olivedrab, $alpha: 1);
 
     /*定义滚动条高宽及背景
@@ -98,7 +99,7 @@ const closeTimeLine = () => {
     .main {
         background-color: #fff;
         border-radius: 15px;
-        padding: 10px;
+        padding: 20px;
         margin-bottom: 20px;
 
         .name {
@@ -151,4 +152,6 @@ const closeTimeLine = () => {
 :deep(.el-timeline-item__timestamp) {
     color: #fff;
 }
+
+
 </style>

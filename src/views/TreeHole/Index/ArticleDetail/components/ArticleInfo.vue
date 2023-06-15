@@ -33,7 +33,7 @@
         </div>
     </div>
     <!--  -->
-    <TimeLine ref="timeLine" @close="cahngeTimeLine" :articleInfo="articleInfo" v-if="showTimeLine"></TimeLine>
+    <TimeLine ref="timeLine" @close="cahngeTimeLine" :articleInfo="articleInfo"  v-if="showTimeLine"></TimeLine>
 </template>
 <script setup lang='ts'>
 import { onMounted, computed, ref } from 'vue';

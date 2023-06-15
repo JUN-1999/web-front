@@ -5,10 +5,10 @@
             height: labelStyleHeight ? labelStyleHeight : '140px'
         }">
             <template v-if="item.type == 'img'">
-                <ViewImg :loading="loading" :src="item.url" :showDelete="true" @imgDelete="imgDelete" />
+                <ViewImg :loading="loading" :src="item.url" :showDelete="true" @imgDelete="mediaDelete" />
             </template>
             <template v-if="item.type == 'video'">
-                <ViewVideo :src="item.url" :showDelete="true"></ViewVideo>
+                <ViewVideo :src="item.url" :showDelete="true" @videoDelete="mediaDelete"></ViewVideo>
             </template>
         </div>
         <label :style="{
@@ -29,7 +29,6 @@ import ViewImg from './ViewImg.vue';
 import ViewVideo from './ViewVideo.vue';
 import type { IIMG } from '@/type/TreeHole/file';
 // 图片列表
-
 const uploadImg_ID = 'uploadIMG_' + Math.random() * 1000;
 
 interface IProps {
@@ -48,11 +47,10 @@ const props = withDefaults(
         accept: 'image/*'
     }
 )
+const emits = defineEmits(['uploadSuccess', 'mediaDelete'])
+
 const wjcUpload = ref();
-
 let loading = ref(false);
-const emits = defineEmits(['uploadSuccess'])
-
 
 // 上传功能
 const inputFile = ref<HTMLInputElement | null>(null)
@@ -90,14 +88,15 @@ const inputChange = async () => {
     }
 
 }
+// 媒体删除
+const mediaDelete = (src: string) => {
+    emits('mediaDelete', src)
+};
 
-
-
-const imgDelete = (src: string) => {
-    // imgList.value = imgList.value.filter(item => {
-    //     return item.url != src
-    // })
-};//图片删除
+defineExpose({
+    wjcUpload,
+    inputFile
+})
 
 </script>
 <style lang='scss' scoped>

@@ -6,8 +6,20 @@
                 <div class="tag" v-if="articleInfo.ACCOUNT === item.ACCOUNT">瓜主</div>
             </div>
             <div class="right">
-                <div class="name">{{ item.ACCOUNT }} <el-button v-if="articleInfo.ACCOUNT === item.ACCOUNT"
-                        @click="add(item)" :icon="Calendar">加入时间线</el-button> </div>
+                <div class="name">
+                    {{ item.ACCOUNT }}
+                    <template v-if="item.ADD_TIME != '刚刚'">
+                        <el-button type="primary" v-if="articleInfo.ACCOUNT === item.ACCOUNT && !includeTimeLineIds(item.COMMENT_UUID)"
+                            @click="add(item)" :icon="Calendar">
+                            加入时间线
+                        </el-button>
+                        <el-button type="danger" v-if="articleInfo.ACCOUNT === item.ACCOUNT && includeTimeLineIds(item.COMMENT_UUID)"
+                            @click="deTimeLine(item)" :icon="Calendar">
+                            移出时间线
+                        </el-button>
+
+                    </template>
+                </div>
                 <div class="content">{{ item.COMMENT }}</div>
                 <div class="pics">
                     <template v-for="(pic, index) in item.PICS">
@@ -44,6 +56,7 @@ import type { IArticleItem } from '@/type/TreeHole/article';
 import type { ICommentWithChild, IChildComment } from '@/type/TreeHole/comment';
 import {
     addTimeLine,
+    getTimeLineID,
     deleteTimeLine
 } from '@/api/TreeHole/timerLine';
 import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
@@ -51,7 +64,7 @@ import CommentInput from './CommentInput.vue';
 import CommentMinorList from './CommentMinorList.vue';
 import ViewVideo from '@/components/ViewVideo.vue';
 const treeHoleUsers = useTreeHoleUserStore(); // 树洞的用户信息
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 const props = defineProps<{
     commentList: ICommentWithChild[]
     articleuuid: string
@@ -64,6 +77,16 @@ let active_comment_uuid = ref(); // 当前选择的id
 let toUserUUID = ref(''); // @某个用户
 let toUserName = ref(''); // @某个用户账户
 let fatherCommentUUID = ref(''); // 父级的id
+const timeLineIds = ref<string[]>([]);
+
+onMounted(() => {
+
+})
+watch(() => props.articleInfo, (val) => {
+    if (val.ARTICLE_UUID) {
+        TimeLIneID();
+    }
+})
 // 回复按钮
 const reply = (data: ICommentWithChild) => {
     if (!active_comment_uuid.value) {
@@ -103,17 +126,40 @@ const successComment = (index: number, data: ICommentWithChild) => {
 }
 // 加入时间线
 const add = async (row: ICommentWithChild) => {
-    console.log('文章id', row.ARTICLE_UUID);
-    console.log('内容id', row.COMMENT_UUID);
-    let res = await addTimeLine({
-        ARTICLE_UUID: row.ARTICLE_UUID,
-        COMMENT_UUID: row.COMMENT_UUID,
-        TIME: row.ADD_TIME
+    if (row.ADD_TIME !== '刚刚') {
+        await addTimeLine({
+            ARTICLE_UUID: row.ARTICLE_UUID,
+            COMMENT_UUID: row.COMMENT_UUID,
+            TIME: row.ADD_TIME
+        })
+        ElMessage({
+            message: '加入时间线成功',
+            type: 'success',
+        })
+        TimeLIneID()
+    }
+}
+// 从时间线中删除
+const deTimeLine = async (row: ICommentWithChild) => {
+    await deleteTimeLine({
+        COMMENT_UUID: row.COMMENT_UUID
     })
     ElMessage({
-        message: '加入时间线成功',
+        message: '删除时间线成功',
         type: 'success',
     })
+    TimeLIneID()
+}
+// 获得当前文章下的时间线ID
+const TimeLIneID = async () => {
+    let res = await getTimeLineID({
+        ARTICLE_UUID: props.articleInfo.ARTICLE_UUID
+    })
+    timeLineIds.value = res.data;
+}
+// 当前评论是否在时间线中
+const includeTimeLineIds = (id: string) => {
+    return timeLineIds.value.includes(id)
 }
 
 </script>

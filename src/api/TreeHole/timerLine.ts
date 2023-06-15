@@ -20,3 +20,11 @@ export const getTimeLine = (data: any) => {
         data
     })
 }
+
+// 获取时间轴id
+export const getTimeLineID = (data: any) => {
+    return request('/treehole/timeline/getTimeLineID', {
+        method: 'post',
+        data
+    })
+}

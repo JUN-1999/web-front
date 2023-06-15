@@ -4,27 +4,46 @@
             <div class="avatar"><img :src="treeHoleUsers.userInfo?.AVATAR" alt=""></div>
             <input :placeholder="`${props.toUserUUID ? '@' + props.toUserName + '  ' : ''}` + commentPlaceholder"
                 class="comment_input" v-model="comment_text" ref="content" @keyup.enter="checkComment">
-
             <div class="comment_input_right" :class="canSend ? 'can-send' : 'not-can-send'" @click="checkComment">
                 评论
             </div>
         </div>
-        <div class="comment-media">
-            <div class="comment-title">媒体上传</div>
-            <WjcUpload label-style-width="80px" label-style-height="80px" :accept="'video/*,image/*'"
-                @upload-success="uploadSuccess" :pics="pics"></WjcUpload>
+        <div class="media" v-show="pics.length > 0">
+            <WjcUpload ref="WjcUploadRef" label-style-width="80px" label-style-height="80px" :accept="'video/*,image/*'"
+                @upload-success="uploadSuccess" @mediaDelete="mediaDelete" :pics="pics"></WjcUpload>
+        </div>
+        <div class="tools">
+            <div class="comment" @click="uploadFile">
+                <img src="@/assets/svg/TreeHole/media.svg" alt="">
+            </div>
+            <div class="emoji">
+                <V3Emoji @clickEmoji="selectEmoji" :options-name="optionsName" :recent="true" />
+            </div>
         </div>
     </div>
 </template>
 <script setup lang='ts'>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import { postSendCommentApi } from '@/api/TreeHole/comment';
 import type { ICommentWithChild } from '@/type/TreeHole/comment';
 import type { IIMG } from '@/type/TreeHole/file'
 import WjcUpload from '@/components/WjcUpload.vue';
-
+import V3Emoji from 'vue3-emoji'
+import 'vue3-emoji/dist/style.css'
+const optionsName = {
+    'Smileys & Emotion': '笑脸&表情',
+    'Food & Drink': '食物&饮料',
+    'Animals & Nature': '动物&自然',
+    'Travel & Places': '旅行&地点',
+    'People & Body': '人物&身体',
+    Objects: '物品',
+    Symbols: '符号',
+    Flags: '旗帜',
+    Activities: '活动'
+};
+const WjcUploadRef = ref<InstanceType<typeof WjcUpload> | null>();
 const treeHoleUsers = useTreeHoleUserStore(); // 树洞的用户信息
 const emits = defineEmits(['successComment']);
 const props = withDefaults(
@@ -43,6 +62,7 @@ const props = withDefaults(
     flag: 'out',
 }
 )
+
 
 // 评论信息
 const commentPlaceholder = '留下你精彩的评论吧';
@@ -102,6 +122,19 @@ const checkComment = async () => {
 const uploadSuccess = (list: IIMG[]) => {
     pics.value = JSON.parse(JSON.stringify(list));
 }
+// 删除媒体
+const mediaDelete = (src: string) => {
+    pics.value = pics.value.filter(itme => {
+        return itme.url != src
+    })
+}
+const selectEmoji = (emoji: any) => {
+    comment_text.value += emoji
+}
+// 上传媒体
+const uploadFile = () => {
+    WjcUploadRef.value?.inputFile?.click()
+}
 </script>
 <style lang='scss' scoped>
 .comment-input {
@@ -150,7 +183,13 @@ const uploadSuccess = (list: IIMG[]) => {
         cursor: no-drop;
     }
 }
-.comment-media {
+
+.media {
+    margin-top: 10px;
+    padding-left: 80px;
+}
+
+.tools {
     margin-top: 10px;
     padding-left: 80px;
     display: flex;
@@ -181,5 +220,28 @@ const uploadSuccess = (list: IIMG[]) => {
             font-size: 20px;
         }
     }
+
+    .emoji {
+        width: 40px;
+        height: 40px;
+    }
+
+    :deep(.emoji-container-open-btn) {
+        font-size: 35px;
+    }
+
+    .comment {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+
+
 }
 </style>
