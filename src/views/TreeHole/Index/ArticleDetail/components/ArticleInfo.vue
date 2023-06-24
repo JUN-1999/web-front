@@ -9,8 +9,10 @@
                 <img title="已关注" @click="follow" v-if="is_follow" class="tool-img follow"
                     src="@/assets/svg/TreeHole/follow.svg" alt="">
                 <img title="未关注" @click="follow" v-else class="tool-img" src="@/assets/svg/TreeHole/not_follow.svg" alt="">
-                <img title="聊天室" class="tool-img" src="@/assets/imgs/TreeHole/chat_room.png" alt="聊天室">
-                <img title="时间线" @click="cahngeTimeLine(true)" class="tool-img" src="@/assets/svg/TreeHole/timeline.svg" alt="">
+                <img title="聊天室" @click="showChatRoom" class="tool-img" src="@/assets/imgs/TreeHole/chat_room.png"
+                    alt="聊天室">
+                <img title="时间线" @click="cahngeTimeLine(true)" class="tool-img" src="@/assets/svg/TreeHole/timeline.svg"
+                    alt="">
             </div>
             <div class="name"> {{ articleInfo.TITLE }}</div>
             <div class="time"> {{ articleInfo.UPDATE_TIME || articleInfo.ADD_TIME }}</div>
@@ -32,8 +34,10 @@
             </div>
         </div>
     </div>
-    <!--  -->
-    <TimeLine ref="timeLine" @close="cahngeTimeLine" :articleInfo="articleInfo"  v-if="showTimeLine"></TimeLine>
+    <!-- 时间线 -->
+    <TimeLine ref="timeLine" @close="cahngeTimeLine" :articleInfo="articleInfo" v-if="showTimeLine"></TimeLine>
+    <!-- 聊天室 -->
+    <ChatRoom ref="ChatRoomRef"></ChatRoom>
 </template>
 <script setup lang='ts'>
 import { onMounted, computed, ref } from 'vue';
@@ -42,6 +46,7 @@ import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import { postFllowApi } from '@/api/TreeHole/user';
 import TimeLine from '@/views/TreeHole/components/TimeLine.vue';
 import ViewVideo from '@/components/ViewVideo.vue';
+import ChatRoom from '@/views/TreeHole/components/ChatRoom/ChatRoom.vue';
 const props = defineProps<{
     articleInfo: IArticleItem
 }>()
@@ -66,9 +71,13 @@ const follow = async () => {
 let showTimeLine = ref(false);
 // 显示时间轴
 const cahngeTimeLine = (flag: boolean = true) => {
-    console.log('cahngeTimeLine',flag);
-    
     showTimeLine.value = flag;
+}
+
+// 显示聊天室
+const ChatRoomRef=ref();
+const showChatRoom = () => {
+
 }
 
 </script>
