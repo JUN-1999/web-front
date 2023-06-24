@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="input">
-            <textarea v-model="comment_text" placeholder="发表你的看法" maxlength="500"></textarea>
+            <textarea style="resize:none" v-model="comment_text" placeholder="发表你的看法" maxlength="500"></textarea>
             <el-button class="send-messsage-btn" type="success" @click="sendData">发送</el-button>
         </div>
         <!-- 上传组件 -->
@@ -18,13 +18,17 @@
     </div>
 </template>
 <script setup lang='ts'>
+import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import { ref, reactive } from 'vue';
 import type { IIMG } from '@/type/TreeHole/file'
 import WjcUpload from '@/components/WjcUpload.vue';
 import SocketService from '@/utils/websocket';
-
 import V3Emoji from 'vue3-emoji';
+
+const emits = defineEmits(['chatRoomMessage'])
+const treeHoleUserStore = useTreeHoleUserStore();
 const comment_text = ref('');
+
 const WjcUploadRef = ref<InstanceType<typeof WjcUpload> | null>();
 const optionsName = {
     'Smileys & Emotion': '笑脸&表情',
@@ -50,23 +54,28 @@ const uploadSuccess = (list: IIMG[]) => {
     console.log(list);
 }
 
+// websocket 实例实现
 const data = reactive({
     socketServe: SocketService.Instance,
 });
 SocketService.Instance.connect();
 data.socketServe = SocketService.Instance;
-data.socketServe.registerCallBack('callback1', () => {
-    console.log('这是一个回调');
+data.socketServe.registerCallBack('chatRoomMessage', (data: any) => {
+    emits('chatRoomMessage', data)
 });
 const sendData = () => {
     data.socketServe.send({
-        event: 'send',
+        event: 'sendChatRoom',
         data: {
-            username: 'wjc',
-            message: comment_text
+            username: treeHoleUserStore.userInfo.ACCOUNT,
+            useruuid: treeHoleUserStore.userInfo.USER_UUID,
+            avatar: treeHoleUserStore.userInfo.AVATAR,
+            message: comment_text.value,
+            callback: 'chatRoomMessage'
         }
     });
-    console.log('发送数据');
+
+    comment_text.value = '';
 };
 
 </script>

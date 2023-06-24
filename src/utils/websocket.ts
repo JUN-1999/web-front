@@ -12,7 +12,7 @@ export default class SocketService {
     private ws: WebSocket | null = null;
 
     // 存储回调函数
-    private callBackMapping: { [socketType: string]: Function | null } = {};
+    private callBackMapping: { [socketType: string]: Function } = {};
 
     // 标识是否连接成功
     private connected = false;
@@ -57,7 +57,10 @@ export default class SocketService {
 
         // 得到服务端发送过来的数据
         this.ws.onmessage = (msg: MessageEvent) => {
-            console.log(msg.data, '从服务端获取到了数据');
+            const data = JSON.parse(msg.data);//服务端得到的数据
+            if (this.callBackMapping && this.callBackMapping[data.callback]) {
+                this.callBackMapping[data.callback](data)
+            }
         };
     }
 
@@ -68,7 +71,7 @@ export default class SocketService {
 
     // 取消某一个回调函数
     public unRegisterCallBack(socketType: string): void {
-        this.callBackMapping[socketType] = null;
+        this.callBackMapping[socketType] = function () { };
     }
 
     // 发送数据的方法
