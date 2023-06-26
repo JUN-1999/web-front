@@ -19,10 +19,12 @@
 </template>
 <script setup lang='ts'>
 import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { ElMessage } from 'element-plus'
 import type { IIMG } from '@/type/TreeHole/file'
 import WjcUpload from '@/components/WjcUpload.vue';
 import SocketService from '@/utils/websocket';
+import { socket } from '@/utils/socket';
 import V3Emoji from 'vue3-emoji';
 
 const emits = defineEmits(['chatRoomMessage'])
@@ -55,28 +57,89 @@ const uploadSuccess = (list: IIMG[]) => {
 }
 
 // websocket 实例实现
-const data = reactive({
-    socketServe: SocketService.Instance,
-});
-SocketService.Instance.connect();
-data.socketServe = SocketService.Instance;
-data.socketServe.registerCallBack('chatRoomMessage', (data: any) => {
-    emits('chatRoomMessage', data)
-});
+
+// let data = reactive({
+//     socketServe: SocketService.Instance,
+// });
+// const opend = () => {
+//     data = reactive({
+//         socketServe: SocketService.Instance,
+//     });
+//     SocketService.Instance.connect();
+//     data.socketServe = SocketService.Instance;
+//     data.socketServe.registerCallBack('chatRoomMessage', (data: any) => {
+//         emits('chatRoomMessage', data)
+//     });
+// }
+// const closed = () => {
+//     data.socketServe.send({
+//         event: 'closeChatRoom',
+//         data: {
+//             username: treeHoleUserStore.userInfo.ACCOUNT,
+//             useruuid: treeHoleUserStore.userInfo.USER_UUID,
+//             avatar: treeHoleUserStore.userInfo.AVATAR,
+//             message: comment_text.value,
+//             callback: 'chatRoomMessage'
+//         }
+//     });
+//     data.socketServe.unRegisterCallBack('chatRoomMessage');
+//     SocketService.Instance.close();
+// }
 const sendData = () => {
-    data.socketServe.send({
-        event: 'sendChatRoom',
-        data: {
+    if (comment_text.value.length) {
+        const data = {
             username: treeHoleUserStore.userInfo.ACCOUNT,
             useruuid: treeHoleUserStore.userInfo.USER_UUID,
             avatar: treeHoleUserStore.userInfo.AVATAR,
             message: comment_text.value,
             callback: 'chatRoomMessage'
         }
-    });
+        socket.send({
+            event: 'sendChatRoom',
+            data
+        });
 
-    comment_text.value = '';
+        comment_text.value = '';
+    } else {
+        ElMessage({
+            message: '发送内容不能为空',
+            type: 'warning',
+        })
+    }
+
 };
+
+const opend = () => {
+    socket.send({
+        event: 'joinChatRoom',
+        data: {
+            username: treeHoleUserStore.userInfo.ACCOUNT,
+            useruuid: treeHoleUserStore.userInfo.USER_UUID,
+            avatar: treeHoleUserStore.userInfo.AVATAR,
+            message: comment_text.value,
+        }
+    });
+    socket.registerCallBack('chatRoomMessage', (data: any) => {
+        emits('chatRoomMessage', data)
+    });
+}
+const closed = () => {
+    socket.send({
+        event: 'closeChatRoom',
+        data: {
+            username: treeHoleUserStore.userInfo.ACCOUNT,
+            useruuid: treeHoleUserStore.userInfo.USER_UUID,
+            avatar: treeHoleUserStore.userInfo.AVATAR,
+            message: comment_text.value,
+        }
+    });
+    socket.unRegisterCallBack('chatRoomMessage');
+}
+
+defineExpose({
+    opend,
+    closed
+})
 
 </script>
 <style lang='scss' scoped>

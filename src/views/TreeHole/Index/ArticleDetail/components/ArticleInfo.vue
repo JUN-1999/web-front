@@ -75,9 +75,9 @@ const cahngeTimeLine = (flag: boolean = true) => {
 }
 
 // 显示聊天室
-const ChatRoomRef=ref();
+const ChatRoomRef = ref<InstanceType<typeof ChatRoom> | null>();
 const showChatRoom = () => {
-
+    ChatRoomRef.value && ChatRoomRef.value.showChatRoom();
 }
 
 </script>

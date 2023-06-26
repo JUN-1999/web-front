@@ -12,7 +12,11 @@ import 'element-plus/dist/index.css'
 import common from '@/utils/common'
 // 图片裁剪样式
 import VueCropper from 'vue-cropper'; 
-import 'vue-cropper/dist/index.css'
+import 'vue-cropper/dist/index.css';
+
+// websocket链接
+import { socket } from '@/utils/socket';
+socket.reconnect();
 
 const app = createApp(App)
 

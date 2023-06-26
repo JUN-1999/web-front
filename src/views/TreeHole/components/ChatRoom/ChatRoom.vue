@@ -1,6 +1,6 @@
 <template>
-    <el-dialog style="height: 90vh;width: 80vw;" :close-on-click-modal="false" align-center append-to-body
-        v-model="dialogTableVisible">
+    <el-dialog v-if="dialogTableVisible" style="height: 90vh;width: 80vw;" :close-on-click-modal="false" align-center
+        append-to-body v-model="dialogTableVisible" @close="closeChatRoom">
         <div class="box">
             <div class="message-list">
                 <div class="message-box">
@@ -8,7 +8,8 @@
                     </ChatRoomMessageList>
                 </div>
                 <div class="send-message-box">
-                    <ChatRoomSendMessage @chatRoomMessage="chatRoomMessage"></ChatRoomSendMessage>
+                    <ChatRoomSendMessage ref="ChatRoomSendMessageRef" @chatRoomMessage="chatRoomMessage">
+                    </ChatRoomSendMessage>
                 </div>
             </div>
 
@@ -20,22 +21,38 @@
     </el-dialog>
 </template>
 <script setup lang='ts'>
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import type { ICommentListItem } from './type'
 import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import ChatRoomSendMessage from './ChatRoomSendMessage.vue';
 import ChatRoomMessageList from './ChatRoomMessageList.vue';
 
 const treeHoleUserStore = useTreeHoleUserStore();
-const dialogTableVisible = ref(true);
+const dialogTableVisible = ref(false);
 
 const ChatRoomMessageListRef = ref<InstanceType<typeof ChatRoomMessageList> | null>(null);
+const ChatRoomSendMessageRef = ref<InstanceType<typeof ChatRoomSendMessage> | null>(null);
 
 // 获取从服务端得到的数据
 const chatRoomMessage = (data: ICommentListItem) => {
     ChatRoomMessageListRef.value && ChatRoomMessageListRef.value.addMessageList(data);
 }
+const showChatRoom = () => {
+    dialogTableVisible.value = true;
 
+    nextTick(()=>{
+        ChatRoomSendMessageRef.value && ChatRoomSendMessageRef.value.opend();
+    })
+
+}
+const closeChatRoom = () => {
+    ChatRoomSendMessageRef.value && ChatRoomSendMessageRef.value.closed();
+    dialogTableVisible.value = false;
+
+}
+defineExpose({
+    showChatRoom,
+})
 </script>
 <style lang='scss' scoped>
 .box {

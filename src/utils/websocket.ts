@@ -3,7 +3,8 @@ export default class SocketService {
 
     public static get Instance(): SocketService {
         if (!this.instance) {
-            this.instance = new SocketService();
+
+        this.instance = new SocketService();
         }
         return this.instance;
     }
@@ -30,7 +31,7 @@ export default class SocketService {
             return console.log('您的浏览器不支持WebSocket');
         }
 
-        const url = 'ws://127.0.0.1:3290/ws';
+        const url = import.meta.env.VITE_WEBSOCKET_URL;
         // , 'echo-protocol'
         this.ws = new WebSocket(url);
 
@@ -55,6 +56,10 @@ export default class SocketService {
             }, 500 * this.connectRetryCount);
         };
 
+        this.ws.onerror = (e) => {
+            console.log('链接出错了', e);
+        }
+
         // 得到服务端发送过来的数据
         this.ws.onmessage = (msg: MessageEvent) => {
             const data = JSON.parse(msg.data);//服务端得到的数据
@@ -63,6 +68,18 @@ export default class SocketService {
             }
         };
     }
+
+    public close(): void {
+        if (this.ws) {
+            this.ws.onclose = () => {
+                console.log('关闭了链接');
+            };
+            this.ws.close();
+     
+        }
+    }
+
+
 
     // 回调函数的注册
     public registerCallBack(socketType: string, callBack: Function): void {
@@ -76,6 +93,9 @@ export default class SocketService {
 
     // 发送数据的方法
     public send(data: any): void {
+        console.log('链接状态', this.ws?.readyState);
+        console.log('this.connected', this.connected);
+
         if (this.connected) {
             this.sendRetryCount = 0;
             try {

@@ -11,6 +11,7 @@
     </div>
 </template>
 <script setup lang='ts'>
+
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getCommentListAPi } from '@/api/TreeHole/comment';
@@ -43,6 +44,7 @@ onMounted(() => {
     article_uuid.value = route.params.id as string;// 对文章的uuid进行存储
     getArticleInfo();
     getCommentsList();
+  
 })
 // 获得评论列表
 const getCommentsList = async () => {
