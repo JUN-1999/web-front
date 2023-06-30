@@ -27,7 +27,10 @@ import SocketService from '@/utils/websocket';
 import { socket } from '@/utils/socket';
 import V3Emoji from 'vue3-emoji';
 
-const emits = defineEmits(['chatRoomMessage'])
+const porps = defineProps<{
+    articleuuid: string
+}>();
+const emits = defineEmits(['chatRoomMessage']);
 const treeHoleUserStore = useTreeHoleUserStore();
 const comment_text = ref('');
 
@@ -56,35 +59,7 @@ const uploadSuccess = (list: IIMG[]) => {
     console.log(list);
 }
 
-// websocket 实例实现
-
-// let data = reactive({
-//     socketServe: SocketService.Instance,
-// });
-// const opend = () => {
-//     data = reactive({
-//         socketServe: SocketService.Instance,
-//     });
-//     SocketService.Instance.connect();
-//     data.socketServe = SocketService.Instance;
-//     data.socketServe.registerCallBack('chatRoomMessage', (data: any) => {
-//         emits('chatRoomMessage', data)
-//     });
-// }
-// const closed = () => {
-//     data.socketServe.send({
-//         event: 'closeChatRoom',
-//         data: {
-//             username: treeHoleUserStore.userInfo.ACCOUNT,
-//             useruuid: treeHoleUserStore.userInfo.USER_UUID,
-//             avatar: treeHoleUserStore.userInfo.AVATAR,
-//             message: comment_text.value,
-//             callback: 'chatRoomMessage'
-//         }
-//     });
-//     data.socketServe.unRegisterCallBack('chatRoomMessage');
-//     SocketService.Instance.close();
-// }
+// websocket 发送信息
 const sendData = () => {
     if (comment_text.value.length) {
         const data = {
@@ -92,7 +67,8 @@ const sendData = () => {
             useruuid: treeHoleUserStore.userInfo.USER_UUID,
             avatar: treeHoleUserStore.userInfo.AVATAR,
             message: comment_text.value,
-            callback: 'chatRoomMessage'
+            callback: 'chatRoomMessage',
+            articleuuid:porps.articleuuid
         }
         socket.send({
             event: 'sendChatRoom',
@@ -109,37 +85,6 @@ const sendData = () => {
 
 };
 
-const opend = () => {
-    socket.send({
-        event: 'joinChatRoom',
-        data: {
-            username: treeHoleUserStore.userInfo.ACCOUNT,
-            useruuid: treeHoleUserStore.userInfo.USER_UUID,
-            avatar: treeHoleUserStore.userInfo.AVATAR,
-            message: comment_text.value,
-        }
-    });
-    socket.registerCallBack('chatRoomMessage', (data: any) => {
-        emits('chatRoomMessage', data)
-    });
-}
-const closed = () => {
-    socket.send({
-        event: 'closeChatRoom',
-        data: {
-            username: treeHoleUserStore.userInfo.ACCOUNT,
-            useruuid: treeHoleUserStore.userInfo.USER_UUID,
-            avatar: treeHoleUserStore.userInfo.AVATAR,
-            message: comment_text.value,
-        }
-    });
-    socket.unRegisterCallBack('chatRoomMessage');
-}
-
-defineExpose({
-    opend,
-    closed
-})
 
 </script>
 <style lang='scss' scoped>

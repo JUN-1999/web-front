@@ -37,7 +37,7 @@
     <!-- 时间线 -->
     <TimeLine ref="timeLine" @close="cahngeTimeLine" :articleInfo="articleInfo" v-if="showTimeLine"></TimeLine>
     <!-- 聊天室 -->
-    <ChatRoom ref="ChatRoomRef"></ChatRoom>
+    <ChatRoom ref="ChatRoomRef" :articleuuid="articleInfo.ARTICLE_UUID"></ChatRoom>
 </template>
 <script setup lang='ts'>
 import { onMounted, computed, ref } from 'vue';

@@ -8,13 +8,13 @@
                     </ChatRoomMessageList>
                 </div>
                 <div class="send-message-box">
-                    <ChatRoomSendMessage ref="ChatRoomSendMessageRef" @chatRoomMessage="chatRoomMessage">
+                    <ChatRoomSendMessage :articleuuid="articleuuid" ref="ChatRoomSendMessageRef" @chatRoomMessage="chatRoomMessage">
                     </ChatRoomSendMessage>
                 </div>
             </div>
 
             <div class="user-list">
-                用户列表
+                <ChatRoomUserList ref="ChatRoomUserListRef" :list="userList"></ChatRoomUserList>
             </div>
         </div>
 
@@ -22,34 +22,79 @@
 </template>
 <script setup lang='ts'>
 import { nextTick, ref } from 'vue';
+import { socket } from '@/utils/socket';
 import type { ICommentListItem } from './type'
 import { useTreeHoleUserStore } from '@/stores/TreeHoleUser';
 import ChatRoomSendMessage from './ChatRoomSendMessage.vue';
 import ChatRoomMessageList from './ChatRoomMessageList.vue';
+import ChatRoomUserList from './ChatRoomUserList.vue';
 
+const porps = defineProps<{
+    articleuuid: string
+}>()
 const treeHoleUserStore = useTreeHoleUserStore();
 const dialogTableVisible = ref(false);
+const userList = ref<any>([]);
 
 const ChatRoomMessageListRef = ref<InstanceType<typeof ChatRoomMessageList> | null>(null);
 const ChatRoomSendMessageRef = ref<InstanceType<typeof ChatRoomSendMessage> | null>(null);
 
-// 获取从服务端得到的数据
+const showChatRoom = () => {
+    dialogTableVisible.value = true;
+    nextTick(() => {
+        opend();
+    })
+}
+const closeChatRoom = () => {
+    closed();
+    dialogTableVisible.value = false;
+}
+const opend = () => {
+    socket.send({
+        event: 'joinChatRoom',
+        data: {
+            username: treeHoleUserStore.userInfo.ACCOUNT,
+            useruuid: treeHoleUserStore.userInfo.USER_UUID,
+            avatar: treeHoleUserStore.userInfo.AVATAR,
+            articleuuid:porps.articleuuid
+        }
+    });
+    socket.registerCallBack('chatRoomMessage', (data: any) => {
+        chatRoomMessage(data)
+    });
+    socket.registerCallBack('joinChatRoom', (data: any) => {
+        chatRoomUser(data);
+    });
+    socket.registerCallBack('closeChatRoom', (data: any) => {
+        chatRoomUser(data);
+    });
+}
+const closed = () => {
+    socket.send({
+        event: 'closeChatRoom',
+        data: {
+            username: treeHoleUserStore.userInfo.ACCOUNT,
+            useruuid: treeHoleUserStore.userInfo.USER_UUID,
+            avatar: treeHoleUserStore.userInfo.AVATAR,
+            articleuuid:porps.articleuuid
+        }
+    });
+    socket.unRegisterCallBack('chatRoomMessage');
+    socket.unRegisterCallBack('joinChatRoom');
+    socket.unRegisterCallBack('closeChatRoom');
+}
+
+// 得到别人发送的信息
 const chatRoomMessage = (data: ICommentListItem) => {
     ChatRoomMessageListRef.value && ChatRoomMessageListRef.value.addMessageList(data);
 }
-const showChatRoom = () => {
-    dialogTableVisible.value = true;
-
-    nextTick(()=>{
-        ChatRoomSendMessageRef.value && ChatRoomSendMessageRef.value.opend();
-    })
-
+// 得到当前聊天室在线的人员列表
+const chatRoomUser = (data: any) => {
+    console.log(data.data);
+    userList.value = data.data;
 }
-const closeChatRoom = () => {
-    ChatRoomSendMessageRef.value && ChatRoomSendMessageRef.value.closed();
-    dialogTableVisible.value = false;
 
-}
+
 defineExpose({
     showChatRoom,
 })
@@ -82,7 +127,7 @@ defineExpose({
 
     .user-list {
         width: 10vw;
-        background-color: greenyellow;
+        background: linear-gradient(180deg, green, rgb(98, 145, 28), )
     }
 }
 </style>
