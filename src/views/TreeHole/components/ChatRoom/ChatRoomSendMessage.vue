@@ -57,6 +57,21 @@ const uploadFile = () => {
 // 上传成功返回
 const uploadSuccess = (list: IIMG[]) => {
     console.log(list);
+    const data = {
+        username: treeHoleUserStore.userInfo.ACCOUNT,
+        useruuid: treeHoleUserStore.userInfo.USER_UUID,
+        avatar: treeHoleUserStore.userInfo.AVATAR,
+        message: {
+            type: 'media',
+            value: list[0],
+        },
+        callback: 'chatRoomMessage',
+        articleuuid: porps.articleuuid
+    }
+    socket.send({
+        event: 'sendChatRoom',
+        data
+    });
 }
 
 // websocket 发送信息
@@ -66,9 +81,12 @@ const sendData = () => {
             username: treeHoleUserStore.userInfo.ACCOUNT,
             useruuid: treeHoleUserStore.userInfo.USER_UUID,
             avatar: treeHoleUserStore.userInfo.AVATAR,
-            message: comment_text.value,
+            message: {
+                type: 'text',
+                value: comment_text.value,
+            },
             callback: 'chatRoomMessage',
-            articleuuid:porps.articleuuid
+            articleuuid: porps.articleuuid
         }
         socket.send({
             event: 'sendChatRoom',

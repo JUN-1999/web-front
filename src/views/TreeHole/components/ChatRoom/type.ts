@@ -1,5 +1,8 @@
 export interface ICommentListItem {
-    message: string,
+    message: {
+        type: string,
+        value: any
+    },
     username: string,
     useruuid: string,
     avatar: string,

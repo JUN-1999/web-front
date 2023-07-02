@@ -6,6 +6,9 @@
         </KeepAlive>
 
         <Sidebar></Sidebar>
+
+        <!-- 音乐播放器 -->
+        <MusicPlayer></MusicPlayer>
         <!-- 冒泡泡 -->
         <!-- <bubbling></bubbling> -->
     </div>
@@ -13,6 +16,7 @@
 <script setup lang='ts'>
 import SidebarNew from '../components/SidebarNew.vue';
 import Sidebar from '../components/SidebarWJC.vue';
+import MusicPlayer from '../components/MusicPlayer.vue';
 </script>
 <style lang='scss' scoped>
 .treehole {

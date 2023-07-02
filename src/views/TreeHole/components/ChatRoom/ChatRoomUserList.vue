@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         <div v-for="item in list" :key="item.useruuid" class="user-item">
             <img :src="item.avatar" class="img" alt=""> <span>{{ item.username }} </span>
         </div>
@@ -16,6 +16,9 @@ const props = defineProps<{
     align-items: center;
     margin: 10px;
     color: #fff;
+    span{
+        font-size: 14px;
+    }
 }
 
 .img {

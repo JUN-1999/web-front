@@ -9,16 +9,20 @@ interface Socket {
     reconnect_current: number;
     reconnect_timer: ReturnType<typeof setTimeout> | null;
     reconnect_interval: number;
+    callBackMapping: { [socketType: string]: Function }
+    reWebsocketFoo: { [socketType: string]: Function }
 
     init(): void;
     send(data: any, callback?: () => void): void;
     receive(message: MessageEvent): void;
     heartbeat(): void;
+    reSendWebSocket(): void;
     close(): void;
     reconnect(): void;
     registerCallBack(socketType: string, callBack: Function): void;
     unRegisterCallBack(socketType: string): void;
-    callBackMapping: { [socketType: string]: Function }
+    registerReWebsocket(socketType: string, callBack: Function): void;
+    unRegisterReWebsocket(socketType: string): void;
 }
 
 const socket: Socket = {
@@ -33,6 +37,7 @@ const socket: Socket = {
     reconnect_timer: null,
     reconnect_interval: 3000,
     callBackMapping: {},
+    reWebsocketFoo: {},
 
     init(): void {
         if (!("WebSocket" in window)) {
@@ -78,6 +83,8 @@ const socket: Socket = {
             console.log('连接成功');
             this.socket_open = true;
             this.is_reonnect = true;
+            // 判断是否有需要重新发送的请求
+            this.reSendWebSocket();
             this.heartbeat();
         };
 
@@ -88,7 +95,7 @@ const socket: Socket = {
 
     send(data: any, callback: (() => void) | undefined = undefined): void {
         if (this.websock && this.websock.readyState === this.websock.OPEN) {
-            
+
             this.websock.send(JSON.stringify(data));
             if (callback) {
                 callback();
@@ -107,7 +114,7 @@ const socket: Socket = {
     // 处理接受到的信息
     receive(message: MessageEvent): void {
         const params = JSON.parse(message.data);
-        if (params.event!='pink') {
+        if (params.event != 'pink') {
             // 排除掉心跳检测
             if (this.callBackMapping && this.callBackMapping[params.callback]) {
                 this.callBackMapping[params.callback](params)
@@ -131,6 +138,14 @@ const socket: Socket = {
         }, this.hearbeat_interval);
     },
 
+    // 从新发送的websocket请求
+    reSendWebSocket(): void {
+        console.log('reWebsocketFoo', this.reWebsocketFoo);
+        for(const item in Object.keys(this.reWebsocketFoo)){
+            this.reWebsocketFoo[item]();
+        }
+    },
+
     close(): void {
         console.log('主动断开连接');
         clearInterval(this.hearbeat_interval);
@@ -148,6 +163,14 @@ const socket: Socket = {
         this.init();
     },
 
+    // 断开重新发送请求注册
+    registerReWebsocket(reSocketType: string, classBack: Function): void {
+        this.reWebsocketFoo[reSocketType] = classBack;
+    },
+    // 断开重新发送请求取消
+    unRegisterReWebsocket(reSocketType: string): void {
+        this.reWebsocketFoo[reSocketType] = function () { };
+    },
     // 回调函数的注册
     registerCallBack(socketType: string, callBack: Function): void {
         this.callBackMapping[socketType] = callBack;

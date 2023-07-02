@@ -8,7 +8,18 @@
                     <span>{{ item.username }}</span>
                 </div>
                 <div class="message">
-                    {{ item.message }}
+                    <template v-if="item.message.type == 'text'">{{ item.message.value }}</template>
+                    <template v-if="item.message.type == 'media' && item.message.value.type == 'video'">
+                        <video controls class="video" :src="item.message.value.url"></video>
+                        <div class="video">
+                            <ViewVideo :src="item.message.value.url"></ViewVideo>
+                        </div>
+                    </template>
+                    <template v-if="item.message.type == 'media' && item.message.value.type == 'img'">
+                        <!-- <img class="img" :src="item.message.value.url" alt=""> -->
+                        <el-image lazy class="img" :src="item.message.value.url"
+                            :preview-src-list="[item.message.value.url]" :zoom-rate="1.1" fit="contain" />
+                    </template>
                 </div>
             </div>
         </div>
@@ -16,6 +27,7 @@
 </template>
 <script setup lang='ts'>
 import { ref } from 'vue';
+import { ElMessage } from 'element-plus'
 import type { ICommentListItem } from './type'
 interface ICommentListItemNew extends ICommentListItem {
     id: number
@@ -65,6 +77,17 @@ defineExpose({
         padding: 5px;
         border-radius: 5px;
         font-size: 18px;
+
+        .video {
+            width: 200px;
+            height: 200px;
+        }
+
+        .img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
     }
 
     .oneself {
@@ -89,4 +112,5 @@ img {
     background-color: #fff;
     margin-right: 10px;
     margin-left: 0px;
-}</style>
+}
+</style>

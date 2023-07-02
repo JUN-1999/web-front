@@ -56,7 +56,7 @@ let loading = ref(false);
 const inputFile = ref<HTMLInputElement | null>(null)
 const inputChange = async () => {
     loading.value = true;
-    if (inputFile.value?.files) {
+    if (inputFile.value?.files && inputFile.value?.files.length>0) {
         ElMessage({
             message: '图片开始上传',
             type: 'success',
@@ -79,6 +79,7 @@ const inputChange = async () => {
                 type: res.data.type
             })
             emits('uploadSuccess', imgs)
+            inputFile.value.value='';
         }
     } else {
         loading.value = false;

@@ -8,7 +8,8 @@
                     </ChatRoomMessageList>
                 </div>
                 <div class="send-message-box">
-                    <ChatRoomSendMessage :articleuuid="articleuuid" ref="ChatRoomSendMessageRef" @chatRoomMessage="chatRoomMessage">
+                    <ChatRoomSendMessage :articleuuid="articleuuid" ref="ChatRoomSendMessageRef"
+                        @chatRoomMessage="chatRoomMessage">
                     </ChatRoomSendMessage>
                 </div>
             </div>
@@ -56,7 +57,7 @@ const opend = () => {
             username: treeHoleUserStore.userInfo.ACCOUNT,
             useruuid: treeHoleUserStore.userInfo.USER_UUID,
             avatar: treeHoleUserStore.userInfo.AVATAR,
-            articleuuid:porps.articleuuid
+            articleuuid: porps.articleuuid
         }
     });
     socket.registerCallBack('chatRoomMessage', (data: any) => {
@@ -68,6 +69,18 @@ const opend = () => {
     socket.registerCallBack('closeChatRoom', (data: any) => {
         chatRoomUser(data);
     });
+
+    socket.registerReWebsocket('sendJoinChatRoom', () => {
+        socket.send({
+            event: 'joinChatRoom',
+            data: {
+                username: treeHoleUserStore.userInfo.ACCOUNT,
+                useruuid: treeHoleUserStore.userInfo.USER_UUID,
+                avatar: treeHoleUserStore.userInfo.AVATAR,
+                articleuuid: porps.articleuuid
+            }
+        });
+    });
 }
 const closed = () => {
     socket.send({
@@ -76,12 +89,13 @@ const closed = () => {
             username: treeHoleUserStore.userInfo.ACCOUNT,
             useruuid: treeHoleUserStore.userInfo.USER_UUID,
             avatar: treeHoleUserStore.userInfo.AVATAR,
-            articleuuid:porps.articleuuid
+            articleuuid: porps.articleuuid
         }
     });
     socket.unRegisterCallBack('chatRoomMessage');
     socket.unRegisterCallBack('joinChatRoom');
     socket.unRegisterCallBack('closeChatRoom');
+    socket.unRegisterReWebsocket('sendJoinChatRoom');
 }
 
 // 得到别人发送的信息
@@ -127,7 +141,11 @@ defineExpose({
 
     .user-list {
         width: 10vw;
-        background: linear-gradient(180deg, green, rgb(98, 145, 28), )
+        background: linear-gradient(180deg, green, rgb(98, 145, 28), );
+        overflow-y: auto;
+        &::-webkit-scrollbar{
+            width: 0;
+        }
     }
 }
 </style>
