@@ -34,7 +34,7 @@ onMounted(async () => {
     const ap = new APlayer({
         container: document.getElementById('music-box'),
         fixed: true,
-        autoplay: true,
+        autoplay: false,
         audio,
     });
 })

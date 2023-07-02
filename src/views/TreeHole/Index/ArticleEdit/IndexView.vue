@@ -4,11 +4,12 @@
             <div class="header-left">
                 <div class="back" @click="goBack"><i class="iconfont icon-fanhui"></i>返回</div>
                 <div class="line"></div>
-                <div class="title">{{ article_uuid == 0 ? '种下瓜' : '编辑瓜' }}</div>
+                <div class="title">{{ article_uuid == 0 ? '种瓜' : '编辑瓜' }}</div>
             </div>
 
-            <el-button @click="postUpdateArticle" type="success" class="publish-btn">{{ article_uuid == 0 ? '发布' : '修改'
-            }}</el-button>
+            <el-button @click="postUpdateArticle" type="success" class="publish-btn">
+                {{ article_uuid == 0 ? '发布' : '修改' }}
+            </el-button>
         </div>
         <el-form :model="form" label-width="0px">
             <el-form-item label="">
@@ -201,5 +202,4 @@ const getArticle = async () => {
     color: white;
     margin-right: 10px;
 }
-
 </style>

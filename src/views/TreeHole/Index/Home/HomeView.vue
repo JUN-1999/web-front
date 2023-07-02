@@ -94,7 +94,6 @@ const articleDetail = async (data: IArticleItem) => {
 // 获得文章列表
 const getArticleList = async () => {
     if (last_list.value) {
-        console.log('1');
         ElMessage({
             message: '没有更多瓜了',
             type: 'info',
@@ -105,7 +104,6 @@ const getArticleList = async () => {
             pageSize: pageSize.value
         });
         if (res.data.data.length === 0) {
-            console.log('2');
             last_list.value = true;
             ElMessage({
                 message: '没有更多瓜了',

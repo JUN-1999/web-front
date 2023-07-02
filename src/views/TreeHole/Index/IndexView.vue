@@ -9,6 +9,8 @@
 
         <!-- 音乐播放器 -->
         <MusicPlayer></MusicPlayer>
+        <!-- 天气预报 -->
+        <WeatherIndex></WeatherIndex>
         <!-- 冒泡泡 -->
         <!-- <bubbling></bubbling> -->
     </div>
@@ -17,6 +19,7 @@
 import SidebarNew from '../components/SidebarNew.vue';
 import Sidebar from '../components/SidebarWJC.vue';
 import MusicPlayer from '../components/MusicPlayer.vue';
+import WeatherIndex from '../components/WeatherIndex.vue';
 </script>
 <style lang='scss' scoped>
 .treehole {

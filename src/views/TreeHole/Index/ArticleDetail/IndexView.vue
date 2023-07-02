@@ -87,6 +87,8 @@ const minorSuccessComment = async (index: number, data: IChildComment) => {
     font-size: 30px;
     color: #fff;
     cursor: pointer;
+    position: sticky;
+    top: 0;
 }
 
 .icon-fanhui {
