@@ -1,27 +1,38 @@
 <template>
     <div class="weather" :class="detail_show ? 'detail' : 'brief'" @click="weatherFlag" v-if="show">
-        <template v-if="detail_show"></template>
+        <template v-if="detail_show">
+            <div class="city">{{ addressComponent.city || addressComponent.province }}</div>
+            <div class="updateTime">{{ weatherUpdateTime }}发布</div>
+            <div class='weather-now'>
+                <div class="weather-img">
+                    <WeatherSvg :text="weatherNowData.icon"></WeatherSvg>
+                </div>
+                <p class="weather-temp">{{ weatherNowData.temp }}°</p>
+                <p class="weather-text">{{ weatherNowData.text }}</p>
+            </div>
+            <div class="weather-now-other-info">
+                <div class="weather-other-flex">
+                    <div class="text"> {{ weatherNowData.windDir }}</div>
+                    <div class="num"> {{ weatherNowData.windScale }}级</div>
+                </div>
+                <div class="weather-other-flex">
+                    <div class="text"> 空气质量</div>
+                    <div class="num"> 无</div>
+                </div>
+                <div class="weather-other-flex">
+                    <div class="text">相对湿度</div>
+                    <div class="num">{{ weatherNowData.humidity }}%</div>
+                </div>
+            </div>
+            <div class="weather3d">
+              <Weather3DItem v-for="item,index in weather3dData" :index="index" :key="item.fxDate" :data="item"></Weather3DItem>
+            </div>
+        </template>
         <template v-else>
             <div class="left" v-if="weatherNowData">
-                <img v-if="weatherNowData.text == '暴雨'" src="@/assets/svg/weather/tianqi-baoyu.svg" alt="">
-                <img v-if="weatherNowData.text == '大雨'" src="@/assets/svg/weather/tianqi-dayu.svg" alt="">
-                <img v-if="weatherNowData.text == '大暴雨'" src="@/assets/svg/weather/tianqi-dabaoyu.svg" alt="">
-                <img v-if="weatherNowData.text == '小雨'" src="@/assets/svg/weather/tianqi-xiaoyu.svg" alt="">
-                <img v-if="weatherNowData.text == '雷雨'" src="@/assets/svg/weather/tianqi-leiyu.svg" alt="">
-                <img v-if="weatherNowData.text == '阴天'" src="@/assets/svg/weather/tianqi-yintian.svg" alt="">
-                <img v-if="weatherNowData.text == '扬沙'" src="@/assets/svg/weather/tianqi-yangsha.svg" alt="">
-                <img v-if="weatherNowData.text == '雾'" src="@/assets/svg/weather/tianqi-wu.svg" alt="">
-                <img v-if="weatherNowData.text == '沙尘'" src="@/assets/svg/weather/tianqi-shachen.svg" alt="">
-                <img v-if="weatherNowData.text == '晴'" src="@/assets/svg/weather/tianqi-qing.svg" alt="">
-                <img v-if="weatherNowData.text == '小雪'" src="@/assets/svg/weather/tianqi-xiaoxue.svg" alt="">
-                <img v-if="weatherNowData.text == '多云'" src="@/assets/svg/weather/tianqi-duoyun.svg" alt="">
-                <img v-if="weatherNowData.text == '中雪'" src="@/assets/svg/weather/tianqi-zhongxue.svg" alt="">
-                <img v-if="weatherNowData.text == '大雪'" src="@/assets/svg/weather/tianqi-daxue.svg" alt="">
-                <img v-if="weatherNowData.text == '中雨'" src="@/assets/svg/weather/tianqi-zhongyu.svg" alt="">
-                <img v-if="weatherNowData.text == '暴雨'" src="@/assets/svg/weather/tianqi-baoxue.svg" alt="">
-                <img v-if="weatherNowData.text == '雨夹雪'" src="@/assets/svg/weather/tianqi-yujiaxue.svg" alt="">
-                <img v-if="weatherNowData.text == '霜'" src="@/assets/svg/weather/tianqi-shuang.svg" alt="">
-                <img v-if="weatherNowData.text == '雪转晴'" src="@/assets/svg/weather/tianqi-xuezhuanqing.svg" alt="">
+                <div class="weather-img">
+                    <WeatherSvg :text="weatherNowData.icon"></WeatherSvg>
+                </div>
             </div>
             <div class="right">
                 <div class="city" v-if="addressComponent">{{ addressComponent.city || addressComponent.province }}</div>
@@ -33,9 +44,11 @@
 
 <script setup lang='ts'>
 import { ref, onMounted, nextTick } from 'vue';
-import { shallowRef } from 'vue';
+import { shallowRef, computed } from 'vue';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import { weather3d, weatherNow } from '@/api/TreeHole/weather';
+import WeatherSvg from './WeatherSvg.vue';
+import Weather3DItem from './Weather3DItem.vue';
 
 const show = ref(false);
 const detail_show = ref(false);
@@ -43,6 +56,14 @@ const map = shallowRef(null);
 const weather3dData = ref<any[]>([]); // 三天天气信息
 const weatherNowData = ref();// 实时天气信息
 const addressComponent = ref();//位置信息
+const weatherUpdateTime = computed(() => {
+    let time = '';
+    let times = weatherNowData.value.obsTime;
+    let h = new Date(times).getHours();
+    let m = new Date(times).getMinutes();
+    time = h + ':' + m;
+    return time;
+})
 
 
 if ('geolocation' in navigator) {
@@ -63,7 +84,6 @@ if ('geolocation' in navigator) {
                     city: '全国' // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
                 })
                 let lnglat = [position.coords.longitude, position.coords.latitude];
-
                 geocoder.getAddress(lnglat, function (status: any, result: any) {
                     if (status === 'complete' && result.info === 'OK') {
                         // result为对应的地理位置详细信息
@@ -95,7 +115,6 @@ if ('geolocation' in navigator) {
             console.log('今日天气', weatherNowData.value);
         })
 
-
     });
 } else {
     /* geolocation 不存在 */
@@ -113,6 +132,7 @@ const weatherFlag = () => {
 }
 
 
+
 </script>
 <style lang='scss' scoped>
 .weather {
@@ -126,15 +146,77 @@ const weatherFlag = () => {
 }
 
 .detail {
-    width: 150px;
-    height: 300px;
+    width: 260px;
+    height: 400px;
     background: linear-gradient(180deg, #2a6be9, #76bcfe);
+
+    .city {
+        font-size: 16px;
+        color: #fff;
+        font-weight: 600;
+        margin-left: 10px;
+        margin-top: 20px;
+    }
+
+    .updateTime {
+        font-size: 14px;
+        color: #c5c3c3;
+        font-weight: 600;
+        margin-left: 10px;
+        margin-top: 5px;
+    }
+
+    .weather-now {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .weather-img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .weather-temp {
+            font-size: 40px;
+            color: #fff;
+        }
+
+        .weather-text {
+            font-size: 12px;
+            color: #fff;
+        }
+    }
+
+    .weather-now-other-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        color: #fff;
+        margin-top: 20px;
+        .weather-other-flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .text{
+            font-size: 8px;
+        }
+        .num{
+            font-size: 20px;
+        }
+     
+    }
+    .weather3d{
+        display: flex;
+        align-items: center;
+        border-top: 1px solid rgba($color: #fff, $alpha: .5);
+        margin-top: 20px;
+    }
 }
 
-
-
 .brief {
-    width: 150px;
+    width: 160px;
     height: 100px;
     background: linear-gradient(180deg, #2a6be9, #76bcfe);
     display: flex;
@@ -144,7 +226,7 @@ const weatherFlag = () => {
 
 
     .left {
-        img {
+        .weather-img {
             width: 50px;
             height: 50px;
         }

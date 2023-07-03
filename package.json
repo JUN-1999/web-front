@@ -21,6 +21,7 @@
     "element-plus": "^2.3.4",
     "normalize.css": "^8.0.1",
     "pinia": "^2.0.32",
+    "qweather-icons": "^1.3.3",
     "v-viewer": "^3.0.11",
     "viewer": "^0.10.11",
     "vue": "^3.2.47",
