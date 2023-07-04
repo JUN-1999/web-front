@@ -25,7 +25,8 @@
                 </div>
             </div>
             <div class="weather3d">
-              <Weather3DItem v-for="item,index in weather3dData" :index="index" :key="item.fxDate" :data="item"></Weather3DItem>
+                <Weather3DItem v-for="item, index in weather3dData" :index="index" :key="item.fxDate" :data="item">
+                </Weather3DItem>
             </div>
         </template>
         <template v-else>
@@ -66,65 +67,73 @@ const weatherUpdateTime = computed(() => {
 })
 
 
-if ('geolocation' in navigator) {
-    /* geolocation 存在 */
-    navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position.coords);
-        console.log('经度', position.coords.longitude);
-        console.log('纬度', position.coords.latitude);
 
-        // 利用高德地图api 将经纬度转换为城市名
-        AMapLoader.load({
-            key: "c0e0a80726e062ed44a9fcee1b6dbd5f",// 申请好的Web端开发者Key，首次调用 load 时必填
-            version: "2.0",      // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            plugins: ['AMap.Geocoder'],       // 需要使用的的插件列表，如比例尺'AMap.Scale'等
-        }).then((AMap: any) => {
-            AMap.plugin('AMap.Geocoder', function () {
-                let geocoder = new AMap.Geocoder({
-                    city: '全国' // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
-                })
-                let lnglat = [position.coords.longitude, position.coords.latitude];
-                geocoder.getAddress(lnglat, function (status: any, result: any) {
-                    if (status === 'complete' && result.info === 'OK') {
-                        // result为对应的地理位置详细信息
-                        // console.log('获取到的位置信息', result);
-                        // console.log('具体的城市信息', result.regeocode.addressComponent);
-                        addressComponent.value = result.regeocode.addressComponent;
-                        console.log('当前城市', addressComponent.value);
-                    }
-                })
-            })
-        }).catch(e => {
-            console.log(e);
-        })
-
-        weather3d({
-            location: `${position.coords.longitude},${position.coords.latitude}`
-        }).then(res => {
-            // console.log('weather3d', res);
-            weather3dData.value = res.data.daily;
-            console.log('三日天气', weather3dData.value);
-
-        })
-
-        weatherNow({
-            location: `${position.coords.longitude},${position.coords.latitude}`
-        }).then(res => {
-            // console.log('weatherNow', res);
-            weatherNowData.value = res.data.now;
-            console.log('今日天气', weatherNowData.value);
-        })
-
-    });
-} else {
-    /* geolocation 不存在 */
-    console.log('不支持地理位置信息');
-
-}
 onMounted(() => {
-    nextTick(() => {
-        show.value = true;
-    })
+
+    if ('geolocation' in navigator) {
+        /* geolocation 存在 */
+        navigator.geolocation.getCurrentPosition((position) => {
+            console.log(position.coords);
+            console.log('经度', position.coords.longitude);
+            console.log('纬度', position.coords.latitude);
+
+            nextTick(() => {
+                // 利用高德地图api 将经纬度转换为城市名
+                AMapLoader.load({
+                    key: "c0e0a80726e062ed44a9fcee1b6dbd5f",// 申请好的Web端开发者Key，首次调用 load 时必填
+                    version: "2.0",      // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+                    plugins: ['AMap.Geocoder'],       // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+                }).then((AMap: any) => {
+                    AMap.plugin('AMap.Geocoder', function () {
+                        let geocoder = new AMap.Geocoder({
+                            city: '全国' // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                        })
+                        let lnglat = [position.coords.longitude, position.coords.latitude];
+                        geocoder.getAddress(lnglat, function (status: any, result: any) {
+                            if (status === 'complete' && result.info === 'OK') {
+                                // result为对应的地理位置详细信息
+                                // console.log('获取到的位置信息', result);
+                                // console.log('具体的城市信息', result.regeocode.addressComponent);
+                                addressComponent.value = result.regeocode.addressComponent;
+                                console.log('当前城市', addressComponent.value);
+
+                                weather3d({
+                                    location: `${position.coords.longitude},${position.coords.latitude}`
+                                }).then(res => {
+                                    // console.log('weather3d', res);
+                                    weather3dData.value = res.data.daily;
+                                    console.log('三日天气', weather3dData.value);
+
+                                })
+
+                                weatherNow({
+                                    location: `${position.coords.longitude},${position.coords.latitude}`
+                                }).then(res => {
+                                    // console.log('weatherNow', res);
+                                    weatherNowData.value = res.data.now;
+                                    console.log('今日天气', weatherNowData.value);
+                                })
+
+                                show.value = true;
+                            }
+                        })
+                    })
+                }).catch(e => {
+                    console.log(e);
+                })
+
+
+            })
+
+
+
+        });
+    } else {
+        /* geolocation 不存在 */
+        console.log('不支持地理位置信息');
+
+    }
+
 })
 
 const weatherFlag = () => {
@@ -194,20 +203,24 @@ const weatherFlag = () => {
         justify-content: space-evenly;
         color: #fff;
         margin-top: 20px;
+
         .weather-other-flex {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .text{
+
+        .text {
             font-size: 8px;
         }
-        .num{
+
+        .num {
             font-size: 20px;
         }
-     
+
     }
-    .weather3d{
+
+    .weather3d {
         display: flex;
         align-items: center;
         border-top: 1px solid rgba($color: #fff, $alpha: .5);
