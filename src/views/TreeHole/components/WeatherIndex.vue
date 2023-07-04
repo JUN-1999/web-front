@@ -69,7 +69,6 @@ const weatherUpdateTime = computed(() => {
 
 
 onMounted(() => {
-
     if ('geolocation' in navigator) {
         /* geolocation 存在 */
         navigator.geolocation.getCurrentPosition((position) => {
@@ -121,19 +120,13 @@ onMounted(() => {
                 }).catch(e => {
                     console.log(e);
                 })
-
-
             })
-
-
-
         });
     } else {
         /* geolocation 不存在 */
         console.log('不支持地理位置信息');
 
     }
-
 })
 
 const weatherFlag = () => {
