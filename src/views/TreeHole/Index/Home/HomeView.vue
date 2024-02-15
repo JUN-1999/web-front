@@ -186,6 +186,7 @@ const toTop = () => {
 
         // 添加记录
         .ArticleEdit {
+            cursor: pointer;
             position: absolute;
             width: 120px;
             height: 50px;
@@ -202,6 +203,7 @@ const toTop = () => {
                 font-size: 16px;
                 font-weight: 800;
                 color: #544e49;
+         
             }
 
             img {

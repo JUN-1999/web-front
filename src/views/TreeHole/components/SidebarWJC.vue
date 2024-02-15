@@ -125,7 +125,8 @@ const logOut = () => {
                     object-fit: cover;
                     border-radius: 50%;
                     margin-bottom: 10px;
-                    background-color: #fff;
+                    background-color: rgba($color: #fff, $alpha: .5);
+                    backdrop-filter: blur(0.1vw);
                 }
 
             }

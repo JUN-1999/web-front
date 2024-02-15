@@ -22,6 +22,7 @@ const items = [
   { name: "剑三职业选择", pic: jw3IMG, path: "/Jw3" },
   { name: "滚动时间轴", pic: Scrolling, path: "/ScrollingTimeline" },
   { name: "树屋", pic: treehole, path: "/TreeHole" },
+  { name: "笔记", pic: muyuIMG, path: "/Note" },
 ];
 </script>
 

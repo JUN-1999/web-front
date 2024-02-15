@@ -64,6 +64,7 @@ const inputChange = async () => {
         const file = (inputFile.value?.files && inputFile.value.files[0]) as Blob;
         const formData = new FormData();
         formData.append('file', file)
+
         let res = await uploadFile(formData)
         loading.value = false;
 

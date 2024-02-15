@@ -28,7 +28,7 @@ export default defineConfig(
       resolve: {
         alias: {
           '@': fileURLToPath(new URL('./src', import.meta.url)),
-          '@node': fileURLToPath(new URL('./node_modules', import.meta.url))
+
         }
       },
       css: {

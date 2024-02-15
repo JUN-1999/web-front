@@ -21,6 +21,11 @@ const router = createRouter({
       component: () => import('@/views/Jw3/Index.vue')
     },
     {
+      path: '/note',
+      name: 'note',
+      component: () => import('@/views/Note/Index.vue')
+    },
+    {
       path: '/ScrollingTimeline',
       name: 'ScrollingTimeline',
       component: () => import('@/views/ScrollingTimeline/Index.vue')

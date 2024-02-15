@@ -59,7 +59,6 @@ const showCropperIMG = ref(false); // 是否显示裁剪图片框
 
 const inputFileChange = async () => {
     const file = (inputFile.value?.files && inputFile.value.files[0]) as Blob;
-    console.log(file);
     const fileRead = new FileReader();
     fileRead.readAsDataURL(file);
     fileRead.addEventListener("load", function () {
