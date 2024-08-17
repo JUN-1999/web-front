@@ -50,6 +50,7 @@
     </div>
 </template>
 <script setup lang='ts'>
+import { ref, onMounted, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Calendar } from '@element-plus/icons-vue';
 import type { IArticleItem } from '@/type/TreeHole/article';
@@ -64,7 +65,7 @@ import CommentInput from './CommentInput.vue';
 import CommentMinorList from './CommentMinorList.vue';
 import ViewVideo from '@/components/ViewVideo.vue';
 const treeHoleUsers = useTreeHoleUserStore(); // 树洞的用户信息
-import { ref, onMounted, watch } from 'vue';
+
 const props = defineProps<{
     commentList: ICommentWithChild[]
     articleuuid: string
